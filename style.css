@@ -1,0 +1,63 @@
+body{
+    background-color:rgb(240,240,240);
+}
+svg{
+    background-color:transparent;
+    margin:0 auto;
+
+    border-color:rgb(200,200,200);
+    border-width:1px;
+    border-style:solid;
+}
+rect{
+    stroke:rgb(200,200,200);
+    fill:white;
+}
+text{
+    font-family:arial;
+    fill:black;
+}
+text:hover{
+    fill:blue;
+}
+
+#instructions{
+    position:absolute;
+    background-color:transparent;
+}
+
+#container{
+    box-shadow:0px 0px 3px #888888;
+    width:826px;
+    height:1066px;
+    font-family:arial;
+    margin:auto;
+    background-color:white;
+}
+
+#inner_container{
+    padding:100px;
+}
+
+#branch_container{
+    height:500px;
+}
+
+#heading_container{
+}
+
+.relation{
+    padding-top:50px;
+    font-size:18px;
+    color: rgb(50,50,50);
+    border-bottom-color:rgb(200,200,200);
+    border-bottom-width:1px;
+    border-bottom-style:solid;
+}
+.object{
+    padding-top:5px;
+}
+.object:hover{
+    background-color:#ADD8E6;
+    /*outline: 2px solid black;*/
+}

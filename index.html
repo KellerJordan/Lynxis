@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>Synapsis</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="script.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div id="instructions">Key1a: New text node<br>Key1b: New formula node<br>Key2: New synapse between nodes<br>Key3: edit synapse</div>
+	<div id="container">
+		<div id="inner_container">
+			<div id="branch_container" style="height:500px">
+				<svg viewbox=".5 .5 626 500">
+					<defs>
+						<marker id="arrow" markerWidth="10" markerHeight="10" refx="0" refy="2" orient="auto" markerUnits="strokeWidth">
+							<path d="M0,0 L0,4 L5,2 z" />
+						</marker>
+					</defs>
+				</svg>
+			</div>
+			<div id="heading_container">
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+var svg=d3.select("svg");
+svg.attr("width",sWidth).attr("height",sHeight);
+var div=d3.select("#heading_container");
+
+var root;
+var oroot=10;
+query("get",oroot);
+
+$(document).keydown(function(e){
+	switch(e.which){
+		case 81:
+		query("get",oroot);
+		break;
+		case 87:
+		query("rel",root,0,prompt("Enter a name."));
+		break;
+		case 69:
+		query("new",root);
+		break;
+		case 68:
+		query("del",root);
+		query("get",oroot);
+		break;
+    }
+});
+
+</script>
+</html>
