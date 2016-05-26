@@ -5,8 +5,7 @@ var wHeight=$(window).height()-16;
 var sWidth=626;
 var sHeight=500;
 
-var nodeData;
-var nodes;
+var headings,branches,bubbles,nodeData;
 
 function query(type,subid,objid,relation){
     root=subid;
@@ -26,23 +25,25 @@ function constructPage(){
     $("rect").remove();
     $(".relation").remove();
     $(".object").remove();
-    nodes=[];
+    headings=[];
+    branches=[];
+    bubbles=[];
     index=0;
     var h=20;
 
-    for(i in nodeData){
+    for(var i in nodeData){
+
+    }
+
+    for(var i in nodeData){
         n=nodeData[i];
         if(n[1][0][1]==0||n[1][0][1]==1){
-            nodes.push(new branch(n[1][0][1],n[1][0][3],h,0,100+60*i));
-            nodes[nodes.length-1].transform(false);
-            nodes.push(new branch("noid",n[0],h,0,124+60*i));
-            nodes[nodes.length-1].transform(false);
+            branches.push(new branch(n[1][0][1],n[1][0][3],h,0,100+60*i));
+            branches.push(new branch("noid",n[0],h,0,124+60*i));
         }else{
-            nodes.push(new branch("noid",n[0],h,0,100+60*i));
-            nodes[nodes.length-1].transform(false);
+            branches.push(new branch("noid",n[0],h,0,100+60*i));
             for(var j=0;j<n[1].length;j++){
-                nodes.push(new branch(n[1][j][1],n[1][j][3],h,0,124+60*i+20*j));
-                nodes[nodes.length-1].transform(false);
+                branches.push(new branch(n[1][j][1],n[1][j][3],h,0,124+60*i+20*j));
             }
         }
     }
@@ -50,16 +51,12 @@ function constructPage(){
     for(var i in nodeData){
         n=nodeData[i];
         if(n[1][0][1]==0||n[1][0][1]==1){
-            nodes.push(new heading(n[1][0][1],n[1][0][3]));
-            nodes[nodes.length-1].setClass("relation");
-            nodes.push(new heading("noid",n[0]));
-            nodes[nodes.length-1].setClass("object");
+            headings.push(new heading(n[1][0][1],n[1][0][3],"relation"));
+            headings.push(new heading("noid",n[0],"object"));
         }else{
-            nodes.push(new heading("noid",n[0]));
-            nodes[nodes.length-1].setClass("relation");
+            headings.push(new heading("noid",n[0],"relation"));
             for(var j=0;j<n[1].length;j++){
-                nodes.push(new heading(n[1][j][1],n[1][j][3]));
-                nodes[nodes.length-1].setClass("object");
+                headings.push(new heading(n[1][j][1],n[1][j][3],"object"));
             }
         }
     }
@@ -73,28 +70,23 @@ function constructPage(){
 }
 
 class heading{
-    constructor(id,text){
-        this.node=div.append("div").attr("id",id).text(text);
-    }
-    setClass(className){
-        this.node.attr("class",className);
+    constructor(id,text,className){
+        this.node=div.append("div").attr("id",id).text(text).attr("class",className);
     }
 }
 
 class branch{
     constructor(id,text,h,x,y){
-        var testNode=svg.append("text").attr("id","test").attr("font-size",h).text(text);
-        var bbox=document.getElementById("test").getBBox();
-        testNode.remove();
-        this.width=bbox.width;
+        this.width=getTextWidth(text,h);
         this.height=h;
         this.x=x;
         this.y=parseInt(y);
         this.id=id;
         this.index=index;
 
-        this.rectNode=svg.append("rect").attr("id",id).attr("stroke","grey").attr("fill-opacity",.9);
+        this.rectNode=svg.append("rect").attr("stroke","grey");
         this.textNode=svg.append("text").attr("id",id).text(text);
+        this.transform(false);
     }
     transform(transition){
         var w=this.width;
@@ -121,6 +113,35 @@ class branch{
             this.lineNode=svg.append("path").attr("d",path).attr("class","link");
         }
     }
+}
+
+class bubble{
+    constructor(id,text,x,y,d){
+        this.h=100*d/getTextWidth(text,100);
+        this.d=d;
+        this.x=x;
+        this.y=y;
+        this.textNode=svg.append("text").attr("id",id).text(text);
+        this.circNode=svg.append("circle").attr("id",id).attr("fill-opacity",0);
+    }
+    transform(transition){
+        var d=this.d;
+        var x=this.x;
+        var y=this.y;
+        var textNode=this.textNode;
+        var circNode=this.circNode;
+        if(transition){
+            textNode=textNode.transition();
+            circNode=circNode.transition();
+        }
+    }
+}
+
+function getTextWidth(text,h){
+    var testNode=svg.append("text").attr("id","test").attr("font-size",h).text(text);
+    var bbox=document.getElementById("test").getBBox();
+    testNode.remove();
+    return bbox.width;
 }
 
 
