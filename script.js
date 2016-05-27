@@ -31,33 +31,11 @@ function constructPage(){
     index=0;
     var h=20;
 
-    for(var i in nodeData){
-
-    }
-
-    for(var i in nodeData){
-        n=nodeData[i];
-        if(n[1][0][1]==0||n[1][0][1]==1){
-            branches.push(new branch(n[1][0][1],n[1][0][3],h,0,100+60*i));
-            branches.push(new branch("noid",n[0],h,0,124+60*i));
-        }else{
-            branches.push(new branch("noid",n[0],h,0,100+60*i));
-            for(var j=0;j<n[1].length;j++){
-                branches.push(new branch(n[1][j][1],n[1][j][3],h,0,124+60*i+20*j));
-            }
-        }
-    }
-
-    for(var i in nodeData){
-        n=nodeData[i];
-        if(n[1][0][1]==0||n[1][0][1]==1){
-            headings.push(new heading(n[1][0][1],n[1][0][3],"relation"));
-            headings.push(new heading("noid",n[0],"object"));
-        }else{
-            headings.push(new heading("noid",n[0],"relation"));
-            for(var j=0;j<n[1].length;j++){
-                headings.push(new heading(n[1][j][1],n[1][j][3],"object"));
-            }
+    for(var relation in nodeData["relations"]){
+        var nodes=nodeData["relations"][relation];
+        headings.push(new heading("noid",relation,"relation"));
+        for(var i in nodes){
+            headings.push(new heading(nodes["id"],Object.keys(nodes[i]["relations"])[0],"object"));
         }
     }
 

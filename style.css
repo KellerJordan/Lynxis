@@ -49,6 +49,7 @@ text:hover{
 .relation{
     padding-top:50px;
     font-size:18px;
+    font-weight:bold;
     color: rgb(50,50,50);
     border-bottom-color:rgb(200,200,200);
     border-bottom-width:1px;

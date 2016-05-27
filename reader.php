@@ -1,37 +1,17 @@
 <?php
 
-function getNode($subid,$r){
+function getNode($subid,$level){
     global $con;
-
-    $return=array();
-    array_push($return,$subid);
-
-    $rel_list=$con->query("SELECT DISTINCT relation FROM synapses WHERE subid='$subid'")->fetch_all();
-    for($i=0;$i<count($rel_list);$i++){
-        $rel_name=$rel_list[$i][0];
-
-        $rel_instance_list=$con->query("SELECT relid,primarity,objid FROM synapses WHERE subid='$subid' AND relation='$rel_name'")->fetch_all();
-        array_push($rel_list[$i],array());
-        for($j=0;$j<count($rel_instance_list);$j++){
-            $rel_instance=$rel_instance_list[$j];
-            $objid=$rel_instance_list[$j][2];
-
-            $result=array();
-            if($objid!=0){
-                array_push($result,$rel_instance[0],$rel_instance[1]);
+    $return=["id"=>$subid,"relations"=>array()];
+    if($level>0&&$subid>=10){
+        foreach($con->query("SELECT objid,relation FROM synapses WHERE subid='$subid' ORDER BY primarity") as $row){
+            // $return["relations"]["relid"]=$row["relid"];
+            if(!array_key_exists($row["relation"],$return["relations"])){
+                $return["relations"][$row["relation"]]=array();
             }
-
-            // $primary=$con->query("SELECT relation FROM synapses WHERE subid='$objid' AND primarity=0")->fetch_all();
-
-            // $text="_";
-            // if(count($primary)>0){$text=$primary[0][0];}
-            // array_push($result,$text);
-            if($r>0){array_push($result,getNode($objid,$r-1));}
-
-            array_push($rel_list[$i][1],$result);
+            array_push($return["relations"][$row["relation"]],getNode($row["objid"],$level-1));
         }
     }
-    array_push($return,$rel_list);
     return $return;
 }
 
