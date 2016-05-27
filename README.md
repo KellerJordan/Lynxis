@@ -1,2 +1,2 @@
 # Synapsis
-Customizable information viewing and writing interface
+Information viewing and writing interface
