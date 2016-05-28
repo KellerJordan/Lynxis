@@ -7,10 +7,11 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<div id="instructions">Key1a: New text node<br>Key1b: New formula node<br>Key2: New synapse between nodes<br>Key3: edit synapse</div>
+	<div id="instructions">Q: view root node<br>W: input relationship of node to node 0 (name)<br>E: New node with relationship "contains" to current node<br>D: delete current node<br>Key1b: New formula node<br>Key2: New synapse between nodes</div>
 	<div id="container">
 		<div id="inner_container">
 			<div id="branch_container" style="height:500px">
+				<!-- <div id="title"></div> -->
 				<svg viewbox=".5 .5 626 500">
 					<defs>
 						<marker id="arrow" markerWidth="10" markerHeight="10" refx="0" refy="2" orient="auto" markerUnits="strokeWidth">
@@ -45,8 +46,7 @@ $(document).keydown(function(e){
 		query("new",root);
 		break;
 		case 68:
-		query("del",root);
-		query("get",oroot);
+		if(root){query("del",root);}
 		break;
     }
 });

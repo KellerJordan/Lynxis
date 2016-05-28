@@ -3,12 +3,12 @@
 function getNode($subid,$level){
     global $con;
     $return=["id"=>$subid,"relations"=>array()];
-    if($level>0&&$subid>=10){
-        foreach($con->query("SELECT objid,relation FROM synapses WHERE subid='$subid' ORDER BY primarity") as $row){
-            // $return["relations"]["relid"]=$row["relid"];
-            if(!array_key_exists($row["relation"],$return["relations"])){
-                $return["relations"][$row["relation"]]=array();
-            }
+    foreach($con->query("SELECT objid,relation FROM synapses WHERE subid='$subid' ORDER BY primarity") as $row){
+        // $return["relations"]["relid"]=$row["relid"];
+        if(!array_key_exists($row["relation"],$return["relations"])){
+            $return["relations"][$row["relation"]]=array();
+        }
+        if($level>0&&$subid>=10){
             array_push($return["relations"][$row["relation"]],getNode($row["objid"],$level-1));
         }
     }
@@ -30,11 +30,11 @@ switch($_POST["type"]){
     $con->query("INSERT INTO synapses (subid,objid,relation,primarity) VALUES ('$subid','$objid','$relation',1)"); 
     break;
     case "del":
-    $con->query("DELETE FROM synapses WHERE subid='$subid' OR objid='subid'");
+    $con->query("DELETE FROM synapses WHERE subid='$subid' OR objid='$subid'");
     break;
 }
 
-echo json_encode(getNode($subid,2));
+echo json_encode(getNode($subid,10));
 mysqli_close($con);
 
 ?>
