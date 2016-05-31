@@ -50,15 +50,17 @@ function constructPage(){
 
 
     //creation of bubble structure
-    addBubble(nodeData,0,0,250,0);
+    addBubble(nodeData,0,0,250,1);
     for(var i=branches.length;i>0;i--){
         branches[i-1].draw();
     }
 
     $("text,div,circle").click(function(){
-        var id=parseInt(this.id);
-        if(Number.isInteger(id)){
-            query("get",id);
+        if(mode=="navigate"){
+            var id=parseInt(this.id);
+            if(Number.isInteger(id)){
+                query("get",id);
+            }
         }
     });
 }
@@ -66,7 +68,7 @@ function constructPage(){
 function addBubble(array,myX,myY,myR,level){
     bubbles.push(new bubble(array["id"],myX,myY,myR));
 
-    if(level<2){
+    if(level==2){
         var font=150/(level+3);
         text=function(){
             if(!Object.keys(array["relations"])[0]){

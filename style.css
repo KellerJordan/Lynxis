@@ -2,7 +2,7 @@ body{
     background-color:rgb(240,240,240);
 }
 
-#instructions{
+#options{
     position:absolute;
     background-color:transparent;
 }
@@ -21,6 +21,7 @@ body{
 
 #branch_container{
     height:500px;
+    /*padding-bottom:50px;*/
 }
 
 #heading_container{
@@ -30,9 +31,9 @@ body{
     font-size:18px;
     font-weight:bold;
     color: rgb(50,50,50);
-    border-bottom-color:rgb(200,200,200);
+    /*border-bottom-color:rgb(200,200,200);
     border-bottom-width:1px;
-    border-bottom-style:solid;
+    border-bottom-style:solid;*/
 }
 .object{
     padding-top:5px;

@@ -7,7 +7,28 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<div id="instructions">Q: view root node<br>W: input relationship of node to node 0 (name)<br>E: New node with relationship "contains" to current node<br>D: delete current node<br>Key1b: New formula node<br>Key2: New synapse between nodes</div>
+
+	<div id="options">
+		<div id="mode">
+			Mode: navigate
+		</div>
+		<div id="instructions">
+			<br>Keys:
+			<br>Tab: tab between modes
+			<br>B: toggle bubble display
+			<br>
+			<br>Navigate Mode:
+			<br>Q: view root node
+			<br>
+			<br>Edit Mode:
+			<br>W: input relationship of node to node 0 (name)
+			<br>E: New node with relationship "contains" to current node
+			<br>D: delete current node
+			<br>hotkeys for synapses to common nodes
+			<br>Key2: New synapse between nodes
+		</div>
+	</div>
+
 	<div id="container">
 		<div id="inner_container">
 			<div id="branch_container" style="height:500px">
@@ -24,6 +45,7 @@
 			</div>
 		</div>
 	</div>
+
 </body>
 <script>
 var svg=d3.select("svg");
@@ -31,24 +53,44 @@ svg.attr("width",sWidth).attr("height",sHeight);
 var div=d3.select("#heading_container");
 
 var root;
-var oroot=10;
+var oroot=100;
 query("get",oroot);
 
+var mode="navigate";
+
 $(document).keydown(function(e){
+	switch(mode){
+		case "navigate":
+			switch(e.which){
+				case 81:
+				query("get",oroot);
+				break;
+		    }
+		break;
+		case "edit":
+			switch(e.which){
+				case 87:
+				query("rel",root,0,prompt("Enter a name."));
+				break;
+				case 69:
+				query("new",root);
+				break;
+				case 68:
+				if(root){query("del",root);}
+				break;
+		    }
+		break;
+	}
 	switch(e.which){
-		case 81:
-		query("get",oroot);
+		case 9:
+			e.preventDefault();
+			if(mode=="navigate"){mode="edit";}else{mode="navigate";}
+			$("#mode").text("Mode: "+mode);
 		break;
-		case 87:
-		query("rel",root,0,prompt("Enter a name."));
+		case 66:
+			$("#branch_container").toggle();
 		break;
-		case 69:
-		query("new",root);
-		break;
-		case 68:
-		if(root){query("del",root);}
-		break;
-    }
+	}
 });
 
 </script>
