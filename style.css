@@ -64,6 +64,7 @@ text:hover{
 }
 circle{
     fill:white;
+    fill-opacity:.5;
     stroke:rgb(127,127,127);
     stroke-width:2px;
 }

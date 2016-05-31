@@ -21,7 +21,7 @@ $subid=$_POST["subid"];
 
 switch($_POST["type"]){
     case "new":
-    $objid=$con->query("SELECT MAX(subid) FROM synapses")->fetch_all()[0][0]+1;
+    $objid=$con->query("SELECT MAX(GREATEST(subid,objid)) FROM synapses")->fetch_all()[0][0]+1;
     $con->query("INSERT INTO synapses (subid,objid,relation,primarity) VALUES ('$subid','$objid','contains',1)");
     break;
     case "rel":

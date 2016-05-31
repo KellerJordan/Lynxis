@@ -50,17 +50,9 @@ function constructPage(){
 
 
     //creation of bubble structure
-    addBubble(nodeData,0,0,250);
-    for(var i in nodeData["relations"]["contains"]){
-        node=bubbles[parseInt(i)+1];
-        text=function(){
-                    if(!Object.keys(nodes[i]["relations"])[0]){
-                        return "_";
-                    }else{
-                        return Object.keys(nodes[i]["relations"])[0];
-                    }
-                }
-        branches.push(new branch(node.id,text,50,node.x,node.y));
+    addBubble(nodeData,0,0,250,0);
+    for(var i=branches.length;i>0;i--){
+        branches[i-1].draw();
     }
 
     $("text,div,circle").click(function(){
@@ -71,9 +63,24 @@ function constructPage(){
     });
 }
 
-function addBubble(array,myX,myY,myR,firstLevel){
-    bubbles.push(new bubble(array["id"],Object.keys(array["relations"])[0],myX,myY,myR));
-    bubbles[bubbles.length-1].transform(false);
+function addBubble(array,myX,myY,myR,level){
+    bubbles.push(new bubble(array["id"],myX,myY,myR));
+
+    if(level<2){
+        var font=150/(level+3);
+        text=function(){
+            if(!Object.keys(array["relations"])[0]){
+                return "_";
+            }else{
+                return Object.keys(array["relations"])[0];
+            }
+        }
+        if(getTextWidth(text,font)>myR*2){
+            branches.push(new branch(array["id"],text,getTextHeight(text,myR*2),myX,myY));
+        }else{
+            branches.push(new branch(array["id"],text,font,myX,myY));
+        }
+    }
 
     if(array["relations"]["contains"]){
         var n=array["relations"]["contains"].length;
@@ -83,17 +90,7 @@ function addBubble(array,myX,myY,myR,firstLevel){
             var cX=(myR-cR)*Math.cos(cT)+myX;
             var cY=(myR-cR)*Math.sin(cT)+myY;
             if(n==1){cX=myX;cY=myY;cR=myR/golden;}
-            addBubble(array["relations"]["contains"][i],cX,cY,cR,false);
-            // if(firstLevel){
-            //     text=function(){
-            //         if(!Object.keys(nodes[i]["relations"])[0]){
-            //             return "_";
-            //         }else{
-            //             return Object.keys(nodes[i]["relations"])[0];
-            //         }
-            //     }
-            //     branches.push(new branch(node.id,text,50,node.x,node.y));
-            // }
+            addBubble(array["relations"]["contains"][i],cX,cY,cR,level+1);
         }
     }
 }
@@ -101,13 +98,13 @@ function addBubble(array,myX,myY,myR,firstLevel){
 function relR(r,n){return(r*(Math.sin(Math.PI/n))/(1+Math.sin(Math.PI/n)));}
 
 class bubble{
-    constructor(id,text,x,y,r){
+    constructor(id,x,y,r){
         this.id=id;
-        this.text=text;
         this.r=r;
         this.x=x;
         this.y=y;
         this.circNode=svg.append("circle").attr("id",id);
+        this.transform(false);
     }
     transform(transition){
         var r=this.r;
@@ -119,12 +116,6 @@ class bubble{
     }
 }
 
-class heading{
-    constructor(id,text,className){
-        this.node=div.append("div").attr("id",id).text(text).attr("class",className);
-    }
-}
-
 class branch{
     constructor(id,text,h,x,y){
         this.width=getTextWidth(text,h);
@@ -133,9 +124,11 @@ class branch{
         this.y=y;
         this.id=id;
         this.index=index;
-
+        this.text=text;
+    }
+    draw(){
         this.rectNode=svg.append("rect").attr("stroke","grey");
-        this.textNode=svg.append("text").attr("id",id).text(text);
+        this.textNode=svg.append("text").attr("id",this.id).text(this.text);
         this.transform(false);
     }
     transform(transition){
@@ -165,6 +158,12 @@ class branch{
     }
 }
 
+class heading{
+    constructor(id,text,className){
+        this.node=div.append("div").attr("id",id).text(text).attr("class",className);
+    }
+}
+
 function getTextWidth(text,h){
     var testNode=svg.append("text").attr("id","test").attr("font-size",h).text(text);
     var bbox=document.getElementById("test").getBBox();
@@ -172,26 +171,9 @@ function getTextWidth(text,h){
     return bbox.width;
 }
 
-
-// function constructNodes(x,y){
-//     var arbx=150;
-//     var arby=100;
-//     var h=50;
-//     nodes.push(new textNode(primaryNode[0],primaryNode[1],h,x,y));
-//     var w=nodes[0].width/2;
-//     nodes[0].transform(0);
-
-//     h=20;
-//     for(i in childNodes){
-//         index++;
-//         nodes.push(new textNode(childNodes[i][0],childNodes[i][1],h,x+(w+arbx),y+i*(h+arby)/2));
-//         nodes[index].x+=nodes[index].width/2;
-//         nodes[index].transform(0);
-//     }
-//     for(i in parentNodes){
-//         index++;
-//         nodes.push(new textNode(parentNodes[i][0],parentNodes[i][1],h,x-(w+arbx),y+i*(h+arby)/2));
-//         nodes[index].x-=nodes[index].width/2;
-//         nodes[index].transform(0);
-//     }
-// }
+function getTextHeight(text,w){
+    var testNode=svg.append("text").attr("id","test").attr("font-size",1000).text(text);
+    var bbox=document.getElementById("test").getBBox();
+    testNode.remove();
+    return 1000*w/bbox.width;
+}
