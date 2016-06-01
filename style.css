@@ -3,7 +3,7 @@ body{
 }
 
 #options{
-    position:absolute;
+    position:fixed;
     background-color:transparent;
 }
 
@@ -21,13 +21,15 @@ body{
 
 #branch_container{
     height:500px;
-    /*padding-bottom:50px;*/
+    padding-bottom:50px;
 }
 
 #heading_container{
 }
-.relation{
-    padding-top:50px;
+.relation_container{
+    padding-bottom:50px;
+}
+.relation_name{
     font-size:18px;
     font-weight:bold;
     color: rgb(50,50,50);
@@ -38,11 +40,18 @@ body{
 .object{
     padding-top:5px;
 }
-.object:hover{
-    background-color:#ADD8E6;
-    /*outline: 2px solid black;*/
+.object_name{
+    display:inline-block;
 }
-
+.object_name:hover{
+    background-color:#ADD8E6;
+}
+.object_relation{
+    display:inline-block;
+}
+.object_relation:hover{
+    background-color:#ADD8E6;
+}
 
 svg{
     background-color:transparent;
@@ -65,10 +74,7 @@ text:hover{
 }
 circle{
     fill:white;
-    fill-opacity:.5;
+    /*fill-opacity:.5;*/
     stroke:rgb(127,127,127);
     stroke-width:2px;
-}
-circle:hover{
-    fill:#ADD8E6;
 }

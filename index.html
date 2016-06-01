@@ -10,20 +10,21 @@
 
 	<div id="options">
 		<div id="mode">
-			Mode: navigate
+			Mode: view
 		</div>
 		<div id="instructions">
 			<br>Keys:
 			<br>Tab: tab between modes
 			<br>B: toggle bubble display
 			<br>
-			<br>Navigate Mode:
+			<br>View Mode:
 			<br>Q: view root node
 			<br>
 			<br>Edit Mode:
+			<br>Q: delete current node
 			<br>W: input relationship of node to node 0 (name)
 			<br>E: New node with relationship "contains" to current node
-			<br>D: delete current node
+			<br>A: Add node to selection
 			<br>hotkeys for synapses to common nodes
 			<br>Key2: New synapse between nodes
 		</div>
@@ -52,15 +53,17 @@ var svg=d3.select("svg");
 svg.attr("width",sWidth).attr("height",sHeight);
 var div=d3.select("#heading_container");
 
+var mode="view";
+
 var root;
 var oroot=100;
-query("get",oroot);
+var aDown=false;
 
-var mode="navigate";
+query("get",oroot);
 
 $(document).keydown(function(e){
 	switch(mode){
-		case "navigate":
+		case "view":
 			switch(e.which){
 				case 81:
 				query("get",oroot);
@@ -69,14 +72,14 @@ $(document).keydown(function(e){
 		break;
 		case "edit":
 			switch(e.which){
+				case 81:
+				if(root&&confirm("Are you sure?")){query("del",root);}
+				break;
 				case 87:
 				query("rel",root,0,prompt("Enter a name."));
 				break;
 				case 69:
 				query("new",root);
-				break;
-				case 68:
-				if(root){query("del",root);}
 				break;
 		    }
 		break;
@@ -84,7 +87,7 @@ $(document).keydown(function(e){
 	switch(e.which){
 		case 9:
 			e.preventDefault();
-			if(mode=="navigate"){mode="edit";}else{mode="navigate";}
+			if(mode=="view"){mode="edit";}else{mode="view";}
 			$("#mode").text("Mode: "+mode);
 		break;
 		case 66:
@@ -92,6 +95,9 @@ $(document).keydown(function(e){
 		break;
 	}
 });
+
+$(document).on("keydown",function(e){if(e.keyCode=65){aDown=true}});
+$(document).on("keyup",function(e){if(e.keyCode=65){aDown=false}});
 
 </script>
 </html>
