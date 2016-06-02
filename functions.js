@@ -5,8 +5,6 @@ var wHeight=$(window).height()-16;
 var sWidth=626;
 var sHeight=500;
 
-function relR(r,n){return(r*(Math.sin(Math.PI/n))/(1+Math.sin(Math.PI/n)));}
-
 class bubble{
     constructor(id,x,y,r){
         this.id=id;
@@ -67,6 +65,10 @@ class branch{
         }
     }
 }
+
+function relR(r,n){return(r*(Math.sin(Math.PI/n))/(1+Math.sin(Math.PI/n)));}
+
+function getText(text){if(!text){return "_";}else{return text;};}
 
 function getTextWidth(text,h){
     var testNode=svg.append("text").attr("id","test").attr("font-size",h).text(text);

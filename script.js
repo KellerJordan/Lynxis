@@ -1,9 +1,11 @@
 var headings,branches,bubbles,nodeData;
 var selected=[];
 var selectTimeout=true;
+var viewHistory=[];
 
 function query(type,subid,objid,relation){
     root=subid;
+    viewHistory.unshift(root);
     $.post("reader.php",{
         type:type,
         subid:subid,
@@ -11,47 +13,67 @@ function query(type,subid,objid,relation){
         relation:relation
     },function(data,status){
         nodeData=JSON.parse(data);
-        constructPage();    
-        if(type=="del"){query("get",oroot);}
-        if(type=="get"){selectNode(subid.toString());}
+        constructPage();
+        drawSelections();
+        if(type=="del"||type=="rel"){query("get",viewHistory[1]);}
     });
 }
 
 function constructPage(){
-    $("text,rect,circle,.relation_container").remove();
+    $("text,rect,circle,.relation_container,.graph_container").remove();
     headings=[];
     branches=[];
     bubbles=[];
     index=0;
     var h=20;
 
-    bubbleDisplay("contains");
-    headingDisplay();
+    switch(root){
+        case 106:
+        display(["contains"],["contains"],["Importance","Immincence","Enjoyment"])
+        break;
+        default:
+        display(["contains"],[],[]);
+    }
     setEvents();
 }
 
-function selectNode(id){
-    selectTimeout=false;
-    setTimeout(function(){selectTimeout=true;},10);
-    if(aDown){
-        selected.push(id);
-    }else{
-        $("circle").css("fill","white");
-        selected[0]=id;
+function display(bubbleRelations,headingRelations,graphRelations){
+    for(relation in nodeData["relations"]){
+        if(!headingRelations.includes(relation)){
+            headingDisplay(relation);
+        }
     }
-    $("#"+id).css("fill","#ADD8E6");
+    for(i in bubbleRelations){
+        bubbleDisplay(bubbleRelations[i]);
+    }
+    if(graphRelations.length>0){
+        graphDisplay(graphRelations);
+    }
 }
 
-function headingDisplay(){
-    for(var relation in nodeData["relations"]){
-        var nodes=nodeData["relations"][relation];
-        var relDiv=div.append("div").attr("class","relation_container");
-        relDiv.append("div").text(relation).attr("class","relation_name");
-        for(var i in nodes){
-            objDiv=relDiv.append("div").attr("class","object");
-            var text=function(){if(!Object.keys(nodes[i]["relations"])[0]){return "_";}else{return Object.keys(nodes[i]["relations"])[0];};}
-            objDiv.append("div").attr("id",nodes[i]["relid"]).attr("class","object_relation").text("\u21d2");
-            objDiv.append("div").attr("id",nodes[i]["id"]).attr("class","object_name").text(text);
+function headingDisplay(relation){
+    var nodes=nodeData["relations"][relation];
+    var relDiv=div.append("div").attr("class","relation_container");
+    relDiv.append("div").text(relation).attr("class","relation_name");
+    for(var i in nodes){
+        objDiv=relDiv.append("div").attr("class","object");
+        var text=getText(Object.keys(nodes[i]["relations"])[0]);
+        objDiv.append("div").attr("id",nodes[i]["relid"]).attr("class","object_relation").text("\u21d2");
+        objDiv.append("div").attr("id",nodes[i]["id"]).attr("class","object_name").text(text);
+    }
+}
+
+function graphDisplay(relations){
+    var set=nodeData["relations"]["contains"];
+    if(set){
+        var container=d3.select("#inner_container").append("div").attr("class","graph_container");
+        var table=container.append("table");
+        for(var i=0;i<set.length;i++){
+            var tr=table.append("tr");
+            tr.append("td").text(getText(Object.keys(set[i]["relations"]))[0]);
+            for(var j=0;j<relations.length;j++){
+                tr.append("td").text(getText(set[i]["relations"][relations[j]]));
+            }
         }
     }
 }
@@ -68,13 +90,7 @@ function addBubble(array,myX,myY,myR,level,relation){
 
     if(level==2){
         var font=150/(level+3);
-        text=function(){
-            if(!Object.keys(array["relations"])[0]){
-                return "_";
-            }else{
-                return Object.keys(array["relations"])[0];
-            }
-        }
+        var text=getText(Object.keys(array["relations"])[0]);
         if(getTextWidth(text,font)>myR*2){
             branches.push(new branch(array["id"],text,getTextHeight(text,myR*2),myX,myY));
         }else{
@@ -106,9 +122,28 @@ function setEvents(){
                     query("get",id);
                 }
             }
-            if(mode=="edit"&&selectTimeout){
-                selectNode(this.id);
-            }
+        }
+        if(mode=="edit"&&selectTimeout){
+            selectNode(this.id);
         }
     });
+}
+
+function selectNode(id){
+    selectTimeout=false;
+    setTimeout(function(){selectTimeout=true;},10);
+    if(aDown){
+        selected.push(id);
+    }else{
+        selected=[];
+        selected[0]=id;
+    }
+    drawSelections();
+}
+
+function drawSelections(){
+    $("circle").css("fill","white");
+    for(i in selected){
+        $("#"+selected[i]).css("fill","#ADD8E6");
+    }
 }
