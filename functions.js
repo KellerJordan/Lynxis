@@ -68,7 +68,14 @@ class branch{
 
 function relR(r,n){return(r*(Math.sin(Math.PI/n))/(1+Math.sin(Math.PI/n)));}
 
-function getText(text){if(!text){return "_";}else{return text;};}
+function getName(id){
+    var text=query("get_rel",id);
+    if(!text){
+        return "_";
+    }else{
+        return text;
+    };
+}
 
 function getTextWidth(text,h){
     var testNode=svg.append("text").attr("id","test").attr("font-size",h).text(text);

@@ -59,14 +59,14 @@ var root;
 var oroot=100;
 var aDown=false;
 
-query("get",oroot);
+constructPage(oroot);
 
 $(document).keydown(function(e){
 	switch(mode){
 		case "view":
 			switch(e.which){
 				case 81:
-				query("get",oroot);
+				constructPage(oroot);
 				break;
 		    }
 		break;

@@ -3,64 +3,53 @@ var selected=[];
 var selectTimeout=true;
 var viewHistory=[];
 
-function query(type,subid,objid,relation){
+function query(callback,type,subid,objid){
     root=subid;
     viewHistory.unshift(root);
     $.post("reader.php",{
         type:type,
         subid:subid,
         objid:objid,
-        relation:relation
     },function(data,status){
-        nodeData=JSON.parse(data);
-        constructPage();
-        drawSelections();
-        if(type=="del"||type=="rel"){query("get",viewHistory[1]);}
+        callback(data);
     });
 }
 
-function constructPage(){
-    $("text,rect,circle,.relation_container,.graph_container").remove();
-    headings=[];
-    branches=[];
-    bubbles=[];
-    index=0;
-    var h=20;
+function constructPage(id){
+    query(function(data){
+        nodeData=JSON.parse(data);
+        $("text,rect,circle,.relation_container,.graph_container").remove();
+        headings=[];
+        branches=[];
+        bubbles=[];
+        var bubbleStructure=[];
+        index=0;
 
-    switch(root){
-        case 106:
-        display(["contains"],["contains"],["Importance","Immincence","Enjoyment"])
-        break;
-        default:
-        display(["contains"],[],[]);
-    }
-    setEvents();
-}
-
-function display(bubbleRelations,headingRelations,graphRelations){
-    for(relation in nodeData["relations"]){
-        if(!headingRelations.includes(relation)){
-            headingDisplay(relation);
+        for(var i=0;i<nodeData.synapses.length;i++){
+            var synapse=nodeData.synapses[i];
+            switch(synapse.relation){
+                case "contains":
+                // bubbleDisplay(synapse);
+                headingDisplay(synapse);
+                break;
+                default:
+                headingDisplay(synapse);
+            }
         }
-    }
-    for(i in bubbleRelations){
-        bubbleDisplay(bubbleRelations[i]);
-    }
-    if(graphRelations.length>0){
-        graphDisplay(graphRelations);
-    }
+        $("#bubble_container").toggle();
+        setEvents();
+        drawSelections();
+    },"get",id)
 }
 
-function headingDisplay(relation){
-    var nodes=nodeData["relations"][relation];
+function headingDisplay(synapse){
     var relDiv=div.append("div").attr("class","relation_container");
-    relDiv.append("div").text(relation).attr("class","relation_name");
-    for(var i in nodes){
-        objDiv=relDiv.append("div").attr("class","object");
-        var text=getText(Object.keys(nodes[i]["relations"])[0]);
-        objDiv.append("div").attr("id",nodes[i]["relid"]).attr("class","object_relation").text("\u21d2");
-        objDiv.append("div").attr("id",nodes[i]["id"]).attr("class","object_name").text(text);
-    }
+    relDiv.append("div").text(synapse.relation).attr("class","relation_name");
+    var objDiv=relDiv.append("div").attr("class","object");
+    objDiv.append("div").attr("id",synapse.relid).attr("class","object_relation").text("\u21d2");
+    query(function(data){
+        objDiv.append("div").attr("id",synapse.objid).attr("class","object_name").text(JSON.parse(data));
+    },"get_rel",synapse.objid,0);
 }
 
 function graphDisplay(relations){
@@ -98,7 +87,7 @@ function addBubble(array,myX,myY,myR,level,relation){
         }
     }
 
-    if(array["relations"]["contains"]){
+    if(array["relations"][relation]){
         var n=array["relations"][relation].length;
         var cR=relR(myR,n);
         for(var i=0;i<n;i++){
