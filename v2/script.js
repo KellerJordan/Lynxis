@@ -11,44 +11,47 @@ function query(callback,type,subid,objid){
         subid:subid,
         objid:objid,
     },function(data,status){
-        callback(data);
+        callback(JSON.parse(data));
     });
 }
 
 function constructPage(id){
+    $("text,rect,circle,.relation_container,.graph_container").remove();
+    headings=[];
+    branches=[];
+    bubbles=[];
+    var bubbleStructure=[];
+    index=0;
     query(function(data){
-        nodeData=JSON.parse(data);
-        $("text,rect,circle,.relation_container,.graph_container").remove();
-        headings=[];
-        branches=[];
-        bubbles=[];
-        var bubbleStructure=[];
-        index=0;
+        display(data,0);
+    },"get",id);
+}
 
-        for(var i=0;i<nodeData.synapses.length;i++){
-            var synapse=nodeData.synapses[i];
-            switch(synapse.relation){
-                case "contains":
-                // bubbleDisplay(synapse);
-                headingDisplay(synapse);
-                break;
-                default:
-                headingDisplay(synapse);
-            }
-        }
-        $("#bubble_container").toggle();
+function display(data,i){
+    var synapse=data.synapses[i];
+    switch(synapse.relation){
+        // case "contains":
+        // bubbleDisplay(synapse);
+        // headingDisplay(synapse);
+        // break;
+        default:
+        headingDisplay(synapse);
+    }
+    if(i==data.synapses.length-1){
         setEvents();
         drawSelections();
-    },"get",id)
+    }else{
+        display(data,i+1);
+    }
 }
 
 function headingDisplay(synapse){
-    var relDiv=div.append("div").attr("class","relation_container");
-    relDiv.append("div").text(synapse.relation).attr("class","relation_name");
-    var objDiv=relDiv.append("div").attr("class","object");
-    objDiv.append("div").attr("id",synapse.relid).attr("class","object_relation").text("\u21d2");
     query(function(data){
-        objDiv.append("div").attr("id",synapse.objid).attr("class","object_name").text(JSON.parse(data));
+        var relDiv=div.append("div").attr("class","relation_container");
+        relDiv.append("div").text(synapse.relation).attr("class","relation_name");
+        var objDiv=relDiv.append("div").attr("class","object");
+        objDiv.append("div").attr("id",synapse.relid).attr("class","object_relation").text("\u21d2");
+        objDiv.append("div").attr("id",synapse.objid).attr("class","object_name").text(data);
     },"get_rel",synapse.objid,0);
 }
 
@@ -108,7 +111,7 @@ function setEvents(){
                 if(this.class=="object_relation"){
                     query("get_rel",id);
                 }else{
-                    query("get",id);
+                    constructPage(id);
                 }
             }
         }
