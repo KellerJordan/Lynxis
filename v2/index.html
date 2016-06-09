@@ -3,12 +3,12 @@
 <title>Synapsis</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="script.js"></script>
-<script src="functions.js"></script>
+<!-- <script src="script.js"></script> -->
+<!-- <script src="functions.js"></script> -->
+<script src="textEditor.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-
 	<div id="options">
 		<div id="mode">
 			Mode: view
@@ -16,58 +16,47 @@
 		<div id="instructions">
 			<br>Keys:
 			<br>Tab: tab between modes
-			<br>B: toggle bubble display
 			<br>
 			<br>View Mode:
 			<br>Q: view root node
+			<br>W: view highlighted node
 			<br>
 			<br>Edit Mode:
-			<br>Q: delete current node
-			<br>W: input relationship of node to node 0 (name)
-			<br>E: New node with relationship "contains" to current node
-			<br>A: Add node to selection
-			<br>hotkeys for synapses to common nodes
-			<br>Key2: New synapse between nodes
+			<br>Keys function normally to edit document
 		</div>
 	</div>
-
-	<div id="container">
-		<div id="inner_container">
-			<div id="bubble_container">
-				<svg viewbox=".5 .5 626 500">
-					<defs>
-						<marker id="arrow" markerWidth="10" markerHeight="10" refx="0" refy="2" orient="auto" markerUnits="strokeWidth">
-							<path d="M0,0 L0,4 L5,2 z" />
-						</marker>
-					</defs>
-				</svg>
-			</div>
-			<div id="heading_container">
-			</div>
+	<form id="myForm" name="compForm" method="post" action="sample.php" onsubmit="if(validateMode()){this.myDoc.value=oDoc.innerHTML;return true;}return false;">
+		<input type="hidden" name="myDoc">
+		<div id="toolbar">
+		<img class="intLink" title="Print" onclick="printDoc();" src="icons/print.png">
+		<img class="intLink" title="Numbered list" onclick="formatDoc('insertorderedlist');" src="icons/numberedlist.gif" />
+		<img class="intLink" title="Dotted list" onclick="formatDoc('insertunorderedlist');" src="icons/dottedlist.gif" />
+		<img class="intLink" title="Hyperlink" onclick="var sLnk=prompt('Write the URL here','http:\/\/');if(sLnk&&sLnk!=''&&sLnk!='http://'){formatDoc('createlink',sLnk)}" src="icons/hyperlink.gif" />
 		</div>
+		<br>
+		<p><input type="checkbox" name="switchMode" id="switchBox" onchange="setDocMode(this.checked);" /> <label for="switchBox">Show HTML</label></p>
+		<p><input type="submit" value="Send" /></p>
+	</form>
+	<div id="container">
+		<div id="textBox" contenteditable="true">Lorem ipsum</div>
 	</div>
 
 </body>
 <script>
-var svg=d3.select("svg");
-svg.attr("width",sWidth).attr("height",sHeight);
-var div=d3.select("#heading_container");
+var div=d3.select("#inner_container");
+div.attr("contenteditable","true");
 
 var mode="view";
 
 var root;
 var oroot=100;
-var aDown=false;
-
-constructPage(oroot);
-$("#bubble_container").toggle();
 
 $(document).keydown(function(e){
 	switch(mode){
 		case "view":
 			switch(e.which){
 				case 81:
-				constructPage(oroot);
+				query("get",oroot);
 				break;
 		    }
 		break;
@@ -96,8 +85,12 @@ $(document).keydown(function(e){
 	switch(e.which){
 		case 9:
 			e.preventDefault();
-			if(mode=="view"){mode="edit";}else{mode="view";}
-			$("#mode").text("Mode: "+mode);
+			// if(mode=="view"){mode="edit";}else{mode="view";}
+			// $("#mode").text("Mode: "+mode);
+		break;
+		case 13:
+			// e.preventDefault();
+			// document.execCommand('insertHTML', false, '<br><br>');
 		break;
 		case 66:
 			$("#bubble_container").toggle();
@@ -105,8 +98,18 @@ $(document).keydown(function(e){
 	}
 });
 
-$(document).on("keydown",function(e){if(e.keyCode=65){aDown=true}});
-$(document).on("keyup",function(e){if(e.keyCode=65){aDown=false}});
+$('div[contenteditable=true]').keydown(function(e) {
+	if (e.keyCode == 13) {
+		formatDoc('insertHTML','<br><br>')
+	return false;
+	}
+});
+
+// document.querySelector("div[contenteditable]").addEventListener("paste", function(e) {
+//     e.preventDefault();
+//     var text = e.clipboardData.getData("text/html");
+//     document.execCommand("insertHTML", false, text);
+// });
 
 </script>
 </html>

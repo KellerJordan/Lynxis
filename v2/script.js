@@ -1,4 +1,4 @@
-var headings,branches,bubbles,nodeData;
+var headings,branches,nodeData;
 var selected=[];
 var selectTimeout=true;
 var viewHistory=[];
@@ -19,8 +19,6 @@ function constructPage(id){
     $("text,rect,circle,.relation_container,.graph_container").remove();
     headings=[];
     branches=[];
-    bubbles=[];
-    var bubbleStructure=[];
     index=0;
     query(function(data){
         display(data,0);
@@ -66,39 +64,6 @@ function graphDisplay(relations){
             for(var j=0;j<relations.length;j++){
                 tr.append("td").text(getText(set[i]["relations"][relations[j]]));
             }
-        }
-    }
-}
-
-function bubbleDisplay(relation){
-    addBubble(nodeData,0,0,250,1,relation);
-    for(var i=branches.length;i>0;i--){
-        branches[i-1].draw();
-    }
-}
-
-function addBubble(array,myX,myY,myR,level,relation){
-    bubbles.push(new bubble(array["id"],myX,myY,myR));
-
-    if(level==2){
-        var font=150/(level+3);
-        var text=getText(Object.keys(array["relations"])[0]);
-        if(getTextWidth(text,font)>myR*2){
-            branches.push(new branch(array["id"],text,getTextHeight(text,myR*2),myX,myY));
-        }else{
-            branches.push(new branch(array["id"],text,font,myX,myY));
-        }
-    }
-
-    if(array["relations"][relation]){
-        var n=array["relations"][relation].length;
-        var cR=relR(myR,n);
-        for(var i=0;i<n;i++){
-            var cT=(Math.PI/2-Math.PI/n)+i*2*Math.PI/n;
-            var cX=(myR-cR)*Math.cos(cT)+myX;
-            var cY=(myR-cR)*Math.sin(cT)+myY;
-            if(n==1){cX=myX;cY=myY;cR=myR/golden;}
-            addBubble(array["relations"][relation][i],cX,cY,cR,level+1,relation);
         }
     }
 }
