@@ -1,5 +1,5 @@
 # Synapsis
-Information viewing and writing interface
+WIP information viewing and writing interface. Final version will incorporate TeX editing API, as well as supporting creation of flow chart style notes and tables. 
 
 Screenshots of version history:
 
