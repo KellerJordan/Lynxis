@@ -1,6 +1,8 @@
 # Synapsis
 Information viewing and writing interface
-Screenshots of version history
+
+Screenshots of version history:
+
 v2 (WIP, so many features temporarily broken):
 ![image](https://cloud.githubusercontent.com/assets/18433116/15915610/91a3537c-2d9f-11e6-9e44-a26860909c2f.png)
 v1 (fairly stable, if keys used any way other than exactly laid out sql structure breaks extremely easily):
