@@ -3,7 +3,7 @@ WIP information viewing and writing interface. Final version will incorporate Te
 
 Screenshots of version history:
 
-v2 (WIP, so many features temporarily broken):
+v2 (added text editor functionality, many features temporarily broken):
 ![image](https://cloud.githubusercontent.com/assets/18433116/15915610/91a3537c-2d9f-11e6-9e44-a26860909c2f.png)
 v1 (fairly stable, if keys used any way other than exactly laid out sql structure breaks extremely easily):
 ![image](https://cloud.githubusercontent.com/assets/18433116/15915487/7b1c0dc0-2d9e-11e6-9036-056657bf7ef9.png)
