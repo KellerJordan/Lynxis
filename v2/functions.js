@@ -3,13 +3,16 @@ var golden=(1+Math.sqrt(5))/2;
 var wWidth=$(window).width()-16;
 var wHeight=$(window).height()-16;
 
-function getName(id){
-    var text=query("get_rel",id);
-    if(!text){
-        return "_";
-    }else{
-        return text;
-    };
+function formatDoc(sCmd, sValue) {
+    document.execCommand(sCmd, false, sValue);
+}
+
+function printDoc(){
+    var myWindow=window.open("","","width="+wWidth+",height="+wHeight);
+    myWindow.document.open();
+    myWindow.document.write('<html><body><div style="padding:50px">'+$("#textBox").html()+'</div></body></html>');
+    myWindow.print();
+    myWindow.close();
 }
 
 function getTextWidth(text,h){
@@ -24,4 +27,12 @@ function getTextHeight(text,w){
     var bbox=document.getElementById("test").getBBox();
     testNode.remove();
     return 1000*w/bbox.width;
+}
+
+function parseSynapse(data){
+    return '<b>abc</b><br><br>sdffdsfdsfds';
+}
+
+function parseHeadings(data){
+
 }

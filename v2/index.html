@@ -4,47 +4,29 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <!-- <script src="script.js"></script> -->
-<!-- <script src="functions.js"></script> -->
-<script src="textEditor.js"></script>
-<link rel="stylesheet" type="text/css" href="style.css">
+<script src="functions.js"></script>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 	<div id="options">
-		<div id="mode">
-			Mode: view
-		</div>
+		<div id="mode">Mode: view</div>
 		<div id="instructions">
-			<br>Keys:
-			<br>Tab: tab between modes
-			<br>
-			<br>View Mode:
+			<br>In view mode:
 			<br>Q: view root node
 			<br>W: view highlighted node
-			<br>
-			<br>Edit Mode:
-			<br>Keys function normally to edit document
 		</div>
 	</div>
-	<form id="myForm" name="compForm" method="post" action="sample.php" onsubmit="if(validateMode()){this.myDoc.value=oDoc.innerHTML;return true;}return false;">
-		<input type="hidden" name="myDoc">
-		<div id="toolbar">
-		<img class="intLink" title="Print" onclick="printDoc();" src="icons/print.png">
-		<img class="intLink" title="Numbered list" onclick="formatDoc('insertorderedlist');" src="icons/numberedlist.gif" />
-		<img class="intLink" title="Dotted list" onclick="formatDoc('insertunorderedlist');" src="icons/dottedlist.gif" />
+	<form id="myForm">
+		<img class="intLink" title="Print" onclick="printDoc();" src="icons/print.png" />
+		<img class="intLink" title="Numbered list" onclick='formatDoc("insertorderedlist");' src='icons/numberedlist.gif' />
+		<img class="intLink" title="Dotted list" onclick='formatDoc("insertunorderedlist");' src='icons/dottedlist.gif' />
 		<img class="intLink" title="Hyperlink" onclick="var sLnk=prompt('Write the URL here','http:\/\/');if(sLnk&&sLnk!=''&&sLnk!='http://'){formatDoc('createlink',sLnk)}" src="icons/hyperlink.gif" />
-		</div>
-		<br>
-		<p><input type="checkbox" name="switchMode" id="switchBox" onchange="setDocMode(this.checked);" /> <label for="switchBox">Show HTML</label></p>
-		<p><input type="submit" value="Send" /></p>
 	</form>
 	<div id="container">
-		<div id="textBox" contenteditable="true">Lorem ipsum</div>
+		<div id="textBox" contenteditable="true"></div>
 	</div>
-
 </body>
 <script>
-var div=d3.select("#inner_container");
-div.attr("contenteditable","true");
 
 var mode="view";
 
@@ -52,64 +34,36 @@ var root;
 var oroot=100;
 
 $(document).keydown(function(e){
-	switch(mode){
-		case "view":
-			switch(e.which){
-				case 81:
-				query("get",oroot);
-				break;
-		    }
-		break;
-		case "edit":
-			switch(e.which){
-				case 81:
-				if(root&&confirm("Are you sure?")){query("del",selected[0]);}
-				break;
-				case 87:
-				var name=prompt("Enter a relation.");
-				if(name){query("rel",selected[0],function(){
-					if(selected.length==1){
-						return 0;
-					}else{
-						return selected[1];
-					}
-				}
-					,name);}
-				break;
-				case 69:
-				query("new",root);
-				break;
-		    }
-		break;
+	if(mode=="view"){
+		switch(e.which){
+			case 81:
+			query("get",oroot);
+			break;
+	    }
 	}
-	switch(e.which){
-		case 9:
-			e.preventDefault();
-			// if(mode=="view"){mode="edit";}else{mode="view";}
-			// $("#mode").text("Mode: "+mode);
-		break;
-		case 13:
-			// e.preventDefault();
-			// document.execCommand('insertHTML', false, '<br><br>');
-		break;
-		case 66:
-			$("#bubble_container").toggle();
-		break;
+	if(e.ctrlKey&&!([65,67,86,89,90].indexOf(e.keyCode)!=-1)){e.preventDefault();}
+	if(e.ctrlKey&&e.keyCode==80){printDoc();}
+});
+
+$("body").click(function(e){
+	if(e.target.id=="textBox"){mode="edit"}else{mode="view"}
+	$("#mode").text("Mode: "+mode);
+});
+
+$("textBox").on("paste", function(e){
+    e.preventDefault();
+    var text=e.clipboardData.getData("text/html");
+    document.execCommand("insertHTML", false, text);
+});
+
+$('#textBox').on("keydown", function(e){
+	if(e.keyCode==13){
+		e.preventDefault();
+		formatDoc('insertHTML','<br><br>');
 	}
 });
 
-$('div[contenteditable=true]').keydown(function(e) {
-	if (e.keyCode == 13) {
-		formatDoc('insertHTML','<br><br>')
-	return false;
-	}
-});
-
-// document.querySelector("div[contenteditable]").addEventListener("paste", function(e) {
-//     e.preventDefault();
-//     var text = e.clipboardData.getData("text/html");
-//     document.execCommand("insertHTML", false, text);
-// });
+$("#textBox").html(parseSynapse());
 
 </script>
 </html>
