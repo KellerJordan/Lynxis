@@ -3,7 +3,7 @@
 <title>Synapsis</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<!-- <script src="script.js"></script> -->
+<script src="script.js"></script>
 <script src="functions.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -33,6 +33,8 @@ var mode="view";
 var root;
 var oroot=100;
 
+var tbox=$("#textBox");
+
 $(document).keydown(function(e){
 	if(mode=="view"){
 		switch(e.which){
@@ -43,27 +45,28 @@ $(document).keydown(function(e){
 	}
 	if(e.ctrlKey&&!([65,67,86,89,90].indexOf(e.keyCode)!=-1)){e.preventDefault();}
 	if(e.ctrlKey&&e.keyCode==80){printDoc();}
+	if(e.keyCode==13){
+		e.preventDefault();
+		tbox.html(tbox.html()+'<div><br></div>');
+	}
 });
 
 $("body").click(function(e){
-	if(e.target.id=="textBox"){mode="edit"}else{mode="view"}
+	if(e.target.id=="textBox"||$(e.target).parent("#textBox").length){mode="edit"}else{mode="view"}
 	$("#mode").text("Mode: "+mode);
 });
 
-$("textBox").on("paste", function(e){
+document.addEventListener("paste", function(e){
     e.preventDefault();
     var text=e.clipboardData.getData("text/html");
     document.execCommand("insertHTML", false, text);
 });
 
-$('#textBox').on("keydown", function(e){
-	if(e.keyCode==13){
-		e.preventDefault();
-		formatDoc('insertHTML','<br><br>');
-	}
-});
-
-$("#textBox").html(parseSynapse());
+query(
+	function(data){insertParsedData(data,2,tbox)},
+	"get",
+	oroot
+	);
 
 </script>
 </html>

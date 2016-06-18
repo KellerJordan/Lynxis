@@ -10,7 +10,7 @@ function formatDoc(sCmd, sValue) {
 function printDoc(){
     var myWindow=window.open("","","width="+wWidth+",height="+wHeight);
     myWindow.document.open();
-    myWindow.document.write('<html><body><div style="padding:50px">'+$("#textBox").html()+'</div></body></html>');
+    myWindow.document.write('<html><body><div style="padding:50px">'+tbox.html()+'</div></body></html>');
     myWindow.print();
     myWindow.close();
 }
@@ -29,10 +29,43 @@ function getTextHeight(text,w){
     return 1000*w/bbox.width;
 }
 
-function parseSynapse(data){
-    return '<b>abc</b><br><br>sdffdsfdsfds';
+function insertParsedData(data,deepness,target){
+    for(i in data.synapses){
+        obj=data.synapses[i];
+        if(obj.relation=='contains'){
+            var id=obj.objid;
+            var htmldata='<div class="parent" id="'+id+'"></div><div><br></div>';
+            addHTML(target,htmldata);
+            insertName(id);
+            // if(deepness){
+            //     query(
+            //         function(data){insertParsedData(data,0)},
+            //         "get",
+            //         id
+            //         );
+            // }
+        }
+    }
+}
+
+// function insertObject(id){
+//     var htmldata='<div class="parent" id="'+obj.objid+'"></div><div><br></div>';
+// }
+
+function insertName(id){
+    query(function(data){addHTML($('#'+id),data)},
+    "get_rel",
+    id,
+    0);
+}
+
+function addHTML(target,data){
+    target.html(target.html()+data);
 }
 
 function parseHeadings(data){
-
+    divs=tbox.children()
+    for(var i=0;i<divs.length;i++){
+        console.log($(divs[i]).text());
+    }
 }
