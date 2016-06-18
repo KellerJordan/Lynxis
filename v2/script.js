@@ -8,9 +8,9 @@ function formatDoc(sCmd, sValue) {
 }
 
 function printDoc(){
-    var myWindow=window.open("","","width="+wWidth+",height="+wHeight);
+    var myWindow=window.open('','','');
     myWindow.document.open();
-    myWindow.document.write('<html><body><div style="padding:50px">'+tbox.html()+'</div></body></html>');
+    myWindow.document.write('<html><head><link rel="stylesheet" href="style.css"></head><body><div id="container">'+$('#container').html()+'</div></body></html>');
     myWindow.print();
     myWindow.close();
 }
@@ -41,9 +41,12 @@ function query(callback,type,subid,objid){
 }
 
 function insertParsedData(data,deepness){
+    var first=true;
     for(i in data){
         obj=data[i];
         if(obj.relation=='contains'){
+            if(deepness==1&&!first){d3.select('#textBox').append("div").html('<br>');}
+            first=false;
             var div=d3.select('#textBox').append("div");
             div.attr("id",obj.objid);
             if(deepness==1){div.attr("class","parent");}
