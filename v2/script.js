@@ -1,11 +1,36 @@
-var headings,branches,nodeData;
-var selected=[];
-var selectTimeout=true;
-var viewHistory=[];
+//constants
+var golden=(1+Math.sqrt(5))/2;
+var wWidth=$(window).width()-16;
+var wHeight=$(window).height()-16;
+
+function formatDoc(sCmd, sValue) {
+    document.execCommand(sCmd, false, sValue);
+}
+
+function printDoc(){
+    var myWindow=window.open("","","width="+wWidth+",height="+wHeight);
+    myWindow.document.open();
+    myWindow.document.write('<html><body><div style="padding:50px">'+tbox.html()+'</div></body></html>');
+    myWindow.print();
+    myWindow.close();
+}
+
+function getTextWidth(text,h){
+    var testNode=svg.append("text").attr("id","test").attr("font-size",h).text(text);
+    var bbox=document.getElementById("test").getBBox();
+    testNode.remove();
+    return bbox.width;
+}
+
+function getTextHeight(text,w){
+    var testNode=svg.append("text").attr("id","test").attr("font-size",1000).text(text);
+    var bbox=document.getElementById("test").getBBox();
+    testNode.remove();
+    return 1000*w/bbox.width;
+}
 
 function query(callback,type,subid,objid){
     root=subid;
-    viewHistory.unshift(root);
     $.post("reader.php",{
         type:type,
         subid:subid,
@@ -15,92 +40,22 @@ function query(callback,type,subid,objid){
     });
 }
 
-function constructPage(id){
-    $("text,rect,circle,.relation_container,.graph_container").remove();
-    headings=[];
-    branches=[];
-    index=0;
-    query(function(data){
-        display(data,0);
-    },"get",id);
-}
-
-function display(data,i){
-    var synapse=data.synapses[i];
-    switch(synapse.relation){
-        // case "contains":
-        // bubbleDisplay(synapse);
-        // headingDisplay(synapse);
-        // break;
-        default:
-        headingDisplay(synapse);
-    }
-    if(i==data.synapses.length-1){
-        setEvents();
-        drawSelections();
-    }else{
-        display(data,i+1);
-    }
-}
-
-function headingDisplay(synapse){
-    query(function(data){
-        var relDiv=div.append("div").attr("class","relation_container");
-        relDiv.append("div").text(synapse.relation).attr("class","relation_name");
-        var objDiv=relDiv.append("div").attr("class","object");
-        objDiv.append("div").attr("id",synapse.relid).attr("class","object_relation").text("\u21d2");
-        objDiv.append("div").attr("id",synapse.objid).attr("class","object_name").text(data);
-    },"get_rel",synapse.objid,0);
-}
-
-function graphDisplay(relations){
-    var set=nodeData["relations"]["contains"];
-    if(set){
-        var container=d3.select("#inner_container").append("div").attr("class","graph_container");
-        var table=container.append("table");
-        for(var i=0;i<set.length;i++){
-            var tr=table.append("tr");
-            tr.append("td").text(getText(Object.keys(set[i]["relations"]))[0]);
-            for(var j=0;j<relations.length;j++){
-                tr.append("td").text(getText(set[i]["relations"][relations[j]]));
-            }
+function insertParsedData(data,deepness){
+    for(i in data){
+        obj=data[i];
+        if(obj.relation=='contains'){
+            var div=d3.select('#textBox').append("div");
+            div.attr("id",obj.objid);
+            if(deepness==1){div.attr("class","parent");}
+            if(obj.synapses){$(div[0]).text(obj.synapses[0].relation);}
+            if(deepness){insertParsedData(obj.synapses,deepness-1);}
         }
     }
 }
 
-function setEvents(){
-    $("circle,.object_name,.object_relation").click(function(){
-        if(mode=="view"){
-            var id=parseInt(this.id);
-            if(Number.isInteger(id)){
-                if(this.class=="object_relation"){
-                    query("get_rel",id);
-                }else{
-                    constructPage(id);
-                }
-            }
-        }
-        if(mode=="edit"&&selectTimeout){
-            selectNode(this.id);
-        }
-    });
-}
-
-function selectNode(id){
-    selectTimeout=false;
-    setTimeout(function(){selectTimeout=true;},10);
-    if(aDown){
-        selected.push(id);
-    }else{
-        selected=[];
-        selected[0]=id;
-    }
-    drawSelections();
-}
-
-function drawSelections(){
-    $("circle").css("fill","white");
-    for(i in selected){
-        $("#"+selected[i]).css("fill","#ADD8E6");
+function parseHeadings(data){
+    divs=tbox.children()
+    for(var i=0;i<divs.length;i++){
+        console.log($(divs[i]).text());
     }
 }

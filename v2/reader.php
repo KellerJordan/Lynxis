@@ -1,5 +1,15 @@
 <?php
 
+function recurseData($subid,$depth){
+    global $con;
+    if(!$depth){return;}
+    $return=array();
+        foreach($con->query("SELECT relid,objid,relation FROM synapses WHERE subid='$subid' ORDER BY primarity") as $row){
+            array_push($return,["relation"=>$row["relation"],"relid"=>$row["relid"],"objid"=>$row["objid"],"synapses"=>recurseData($row["objid"],$depth-1)]);
+        }
+    return $return;
+}
+
 function getData(){
     global $con;
     global $_POST;
@@ -21,11 +31,7 @@ function getData(){
         break;
 
         case "get":
-        $return=["id"=>$subid,"synapses"=>array()];
-        foreach($con->query("SELECT relid,objid,relation FROM synapses WHERE subid='$subid' ORDER BY primarity") as $row){
-            array_push($return["synapses"],["relation"=>$row["relation"],"relid"=>$row["relid"],"objid"=>$row["objid"]]);
-        }
-        return $return;
+        return recurseData($subid,10);
         break;
 
         case "get_rel":
