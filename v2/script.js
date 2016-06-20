@@ -8,10 +8,11 @@ function formatDoc(sCmd, sValue) {
 }
 
 function printDoc(){
-    var myWindow=window.open('','','');
+    //'','',''
+    var myWindow=window.open();
     myWindow.document.open();
-    myWindow.document.write('<html><head><link rel="stylesheet" href="style.css"></head><body><div id="container">'+$('#container').html()+'</div></body></html>');
-    myWindow.print();
+    myWindow.document.write('<html><head><link rel="stylesheet" href="style.css"></head><body><div id="container" style="border: 1px solid black;">'+$('#container').html()+'</div></body></html>');
+    $(myWindow.document).ready(function(){myWindow.print();});
     myWindow.close();
 }
 
