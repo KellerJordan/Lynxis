@@ -1,71 +1,75 @@
 <html>
-<head>
-<title>Synapsis</title>
+<head><title>Synapsis</title></head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="script.js"></script>
-<link rel="stylesheet" href="style.css">
-</head>
+<script src="script.js"></script><script src="functions.js"></script><link rel="stylesheet" href="style.css">
 <body>
 	<div id="options">
 		<div id="mode">Mode: view</div>
 		<div id="instructions">
 			<br>In view mode:
 			<br>Q: view root node
-			<br>W: view highlighted node
 		</div>
 	</div>
-	<form id="myForm">
+	<form>
 		<img class="intLink" title="Print" onclick="printDoc();" src="icons/print.png" />
 		<img class="intLink" title="Numbered list" onclick='formatDoc("insertorderedlist");' src='icons/numberedlist.gif' />
-		<img class="intLink" title="Dotted list" onclick='formatDoc("insertunorderedlist");' src='icons/dottedlist.gif' />
-		<img class="intLink" title="Hyperlink" onclick="var sLnk=prompt('Write the URL here','http:\/\/');if(sLnk&&sLnk!=''&&sLnk!='http://'){formatDoc('createlink',sLnk)}" src="icons/hyperlink.gif" />
+		<!-- <img class="intLink" title="Dotted list" onclick='formatDoc("insertunorderedlist");' src='icons/dottedlist.gif' /> -->
+		<!-- <img class="intLink" title="Hyperlink" onclick="var sLnk=prompt('Write the URL here','http:\/\/');if(sLnk&&sLnk!=''&&sLnk!='http://'){formatDoc('createlink',sLnk)}" src="icons/hyperlink.gif" /> -->
 	</form>
 	<div id="container">
-		<div id="textBox" contenteditable="true"></div>
+		<div id="textBox" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
 	</div>
 </body>
 <script>
 
-var mode="view";
-
-var root;
-var oroot=100;
-
-var tbox=$("#textBox");
+var mode="view", root, oroot=100, tbox=$("#textBox");
 
 $(document).keydown(function(e){
 	if(mode=="view"){
 		switch(e.which){
+			case 9:
+			e.preventDefault();
+			// loadPage(root);
+			mode="edit";
+			tbox.attr("contenteditable","true").css("-webkit-user-select","view");
+			$("#mode").text("Mode: "+mode);
+			break;
 			case 81:
-			query("get",oroot);
+			loadPage(oroot);
+			break;
+			case 87:
+			parseHeadings();
 			break;
 	    }
+	}else{
+		if([18,46].indexOf(e.which)!=-1||e.ctrlKey&&!([65,67,86,89,90].indexOf(e.which)!=-1)){e.preventDefault();}
+		if(e.ctrlKey&&e.which==80){printDoc();}
+		switch(e.which){
+			case 9:
+			e.preventDefault();
+			// compareHTML();
+			mode="view";
+			tbox.attr("contenteditable","false").css("-webkit-user-select","none");
+			$("#mode").text("Mode: "+mode);
+			break;
+			case 13:
+			e.preventDefault();
+			if(caretAtEnd()){formatDoc("insertHTML",'<div><br></div>');}
+			break;
+			case 8:
+			if(caretAtStart()){e.preventDefault();}
+			break;
+		}
 	}
-	if(e.ctrlKey&&!([65,67,86,89,90].indexOf(e.keyCode)!=-1)){e.preventDefault();}
-	if(e.ctrlKey&&e.keyCode==80){printDoc();}
-	if(e.keyCode==13){
-		e.preventDefault();
-		tbox.html(tbox.html()+'<div><br></div>');
-	}
-});
-
-$("body").click(function(e){
-	if(e.target.id=="textBox"||$(e.target).parent("#textBox").length){mode="edit"}else{mode="view"}
-	$("#mode").text("Mode: "+mode);
 });
 
 document.addEventListener("paste", function(e){
-    e.preventDefault();
-    var text=e.clipboardData.getData("text/html");
-    document.execCommand("insertHTML", false, text);
+	e.preventDefault();
+	var text=e.clipboardData.getData("text/html");
+	document.execCommand("insertHTML", false, text);
 });
 
-query(
-	function(data){insertParsedData(data,1,tbox)},
-	"get",
-	oroot
-	);
+loadPage(oroot);
 
 </script>
 </html>

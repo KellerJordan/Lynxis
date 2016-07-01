@@ -15,20 +15,33 @@ body {
 
 .intLink { cursor: pointer; }
 label { cursor: pointer; }
-#textBox {
-    outline: 0px solid transparent;
-    padding: 100px;
-    height: 862px;
-    font-family: arial;
-    font-size: 14.666666666666px;
-    line-height: 20px;
-}
-#myForm {
+form{
     float: right;
     text-align: right;
     -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;
 }
 
-.parent {
+#textBox {
+    outline: 0px solid transparent;
+    padding: 96px;
+    height: 862px;
+    font-family: arial;
+    font-size: 14.666666666666px;
+    line-height: 20px;
+}
+
+#textbox>div{
+    line-height: 1.3636364256198375281744330988379;
+}
+.second {
+    padding-top: 20px;
     font-weight: bold;
+    line-height: 20px;
+    font-size: 14.666666px;
+}
+
+.third {
+    font-weight: bold;
+    line-height: 26px;
+    font-size: 18.666666px;
 }
