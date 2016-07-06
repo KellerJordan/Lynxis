@@ -41,7 +41,7 @@ function compareHTML(){
     var objectList=parse_HTML();
     for(var i in objectList){
         if(!(objectList0[i]==objectList[i])){
-            query(function(){},root,"rel",i,objectList[i]);
+            query(function(){},root,"rel",i,objectList[i].replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/\t/g,'\\t').replace(/\v/g,'\\v').replace(/'/g,"\\'").replace(/"/g,'\\"'));
         }
     }
     for(var i in objectList0){
@@ -77,7 +77,7 @@ function insertHTML(data,r,r0){
             if(obj.synapses&&obj.synapses[0]){div.text(obj.synapses[0].relation);}else{div.text("_");}
             tbox.append(div);
             if(r){insertHTML(obj.synapses,r-1,r0);}
-        }
+        } 
     }
 }
 

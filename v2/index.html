@@ -2,12 +2,17 @@
 <head><title>Synapsis</title></head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="script.js"></script><script src="functions.js"></script><link rel="stylesheet" href="style.css">
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"></script>
 <body>
 	<div id="options">
 		<div id="mode">Mode: view</div>
 		<div id="instructions">
 			<br>In view mode:
 			<br>Q: view root node
+			<br>$a\cdot b=\left\| a \right\| \left\| b \right\| \cos { \theta  }$
 		</div>
 	</div>
 	<form>
@@ -54,7 +59,11 @@ $(document).keydown(function(e){
 			break;
 			case 13:
 			e.preventDefault();
-			if(caretAtEnd()){formatDoc("insertHTML",'<div><br></div>');}
+			var range=window.getSelection().getRangeAt(0);
+			var node=range.commonAncestorContainer;
+			range.setStart(node,node.length);
+			range.setEnd(node,node.length);
+			formatDoc("insertHTML",'<div><br></div>');
 			break;
 			case 8:
 			if(caretAtStart()){e.preventDefault();}
@@ -63,11 +72,11 @@ $(document).keydown(function(e){
 	}
 });
 
-document.addEventListener("paste", function(e){
-	e.preventDefault();
-	var text=e.clipboardData.getData("text/html");
-	document.execCommand("insertHTML", false, text);
-});
+// document.addEventListener("paste", function(e){
+// 	e.preventDefault();
+// 	var text=e.clipboardData.getData("text/html");
+// 	document.execCommand("insertHTML", false, text);
+// });
 
 loadPage(oroot);
 
