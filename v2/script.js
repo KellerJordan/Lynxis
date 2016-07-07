@@ -1,4 +1,4 @@
-var objectList0, pageLoaded=true, numLines=42;
+var objectList, pageLoaded=true, numLines=42;
 
 function query(callback,subid,type,objid,relation){
     $.post("reader.php",{
@@ -15,12 +15,12 @@ function query(callback,subid,type,objid,relation){
 function loadPage(id){
     if(pageLoaded){
         pageLoaded=false;
-        if(objectList0){compareHTML()}
+        if(objectList){compareHTML()}
         tbox.html('');
         query(function(data){
             root=id;
             parse_SQL(data);
-            objectList0=parse_HTML();
+            objectList=parse_HTML();
             if(!tbox.children().length){tbox.append("<div><br></div>");}
             setResponses();
             pageLoaded=true;
@@ -38,17 +38,12 @@ function parse_HTML(){
 }
 
 function compareHTML(){
-    var objectList=parse_HTML();
-    for(var i in objectList){
-        if(!(objectList0[i]==objectList[i])){
-            query(function(){},root,"rel",i,objectList[i].replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/\t/g,'\\t').replace(/\v/g,'\\v').replace(/'/g,"\\'").replace(/"/g,'\\"'));
-        }
+    for(var i=0;i<tbox.children().length;i++){
+        var node=tbox.children()[i];
+        if(objectList[node.id]!=$(node).text()&&$(node).text()){query(function(){},root,"rel",node.id,$(node).text().replace(/\\/g,'\\'))}
+        delete objectList[node.id];
     }
-    for(var i in objectList0){
-        if(!(objectList[i])){
-            query(function(){},i,"del");
-        }
-    }
+    for(var i in objectList){query(function(){},i,"del")}
 }
 
 function parse_SQL(data){
@@ -72,8 +67,9 @@ function insertHTML(data,r,r0){
         if(obj.objid!=0){
             var div=$('<div></div>');
             div.attr("id",obj.objid);
-            div.css("font-size",11.666666+r*4);
+            div.css("font-size",14.666666);
             if(r==r0){div.css("font-weight","bold").css("padding-top","20px")}
+            if(obj.relation=="property"){div.css("margin-left","40px")}
             if(obj.synapses&&obj.synapses[0]){div.text(obj.synapses[0].relation);}else{div.text("_");}
             tbox.append(div);
             if(r){insertHTML(obj.synapses,r-1,r0);}
