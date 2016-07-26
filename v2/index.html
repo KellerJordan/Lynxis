@@ -1,17 +1,20 @@
 <html>
 <head><title>Synapsis</title></head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script src="script.js"></script><script src="functions.js"></script><link rel="stylesheet" href="style.css">
-<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
+<script src="script.js"></script><link rel="stylesheet" href="style.css">
 <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"></script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
+<script src="functions.js"></script>
 <body>
 	<div id="options">
-		<div id="mode">Mode: view</div>
-		<div id="instructions">
-			<br>In view mode:
+		<div id="editing">Editing: false</div>
+		<div>
+			<br>In view editing:
 			<br>Q: view root node
-			<br>$a\cdot b=\left\| a \right\| \left\| b \right\| \cos { \theta  }$
+			<!-- <br>$a\cdot b=\left\| a \right\| \left\| b \right\| \cos { \theta  }$
+			<br>$k\left( t \right) =\frac { \left\| c''\left( t \right) \times c'\left( t \right)  \right\|  }{ { \left\| c'\left( t \right)  \right\|  }^{ 3 } } $ -->
 		</div>
+		<div><a target="_blank" href="http://s1.daumcdn.net/editor/fp/service_nc/pencil/Pencil_chromestore.html">Daum Equation Editor</a></div> 
 	</div>
 	<form>
 		<img class="intLink" title="Print" onclick="printDoc();" src="icons/print.png" />
@@ -25,50 +28,31 @@
 </body>
 <script>
 
-var mode="view", root, oroot=100, tbox=$("#textBox");
+var editing=false, root, oroot=100, tbox=$("#textBox");
 
 $(document).keydown(function(e){
-	if(mode=="view"){
+	if(!editing){
 		switch(e.which){
-			case 9:
-			e.preventDefault();
-			// loadPage(root);
-			mode="edit";
-			tbox.attr("contenteditable","true").css("-webkit-user-select","view");
-			$("#mode").text("Mode: "+mode);
-			break;
-			case 81:
+			case 81: //q
 			loadPage(oroot);
-			break;
-			case 87:
-			parseHeadings();
 			break;
 	    }
 	}else{
 		if([18,46].indexOf(e.which)!=-1||e.ctrlKey&&!([65,67,86,89,90].indexOf(e.which)!=-1)){e.preventDefault();}
 		if(e.ctrlKey&&e.which==80){printDoc();}
 		switch(e.which){
-			case 9:
-			e.preventDefault();
-			// compareHTML();
-			mode="view";
-			tbox.attr("contenteditable","false").css("-webkit-user-select","none");
-			$("#mode").text("Mode: "+mode);
-			break;
-			case 13:
-			e.preventDefault();
-			var range=window.getSelection().getRangeAt(0);
-			var node=range.commonAncestorContainer;
-			range.setStart(node,node.length);
-			range.setEnd(node,node.length);
-			formatDoc("insertHTML",'<div><br></div>');
-			break;
-			case 8:
-			if(caretAtStart()){e.preventDefault();}
-			break;
 		}
 	}
 });
+
+$(document).on("keydown", function(e){
+	if(e.which==9){ //tab
+		e.preventDefault();
+		toggleEditing();
+	}
+});
+
+// USER NEEDS TO NOT TYPE BEFORE NORMAL TEXT IS RENDERED
 
 // document.addEventListener("paste", function(e){
 // 	e.preventDefault();

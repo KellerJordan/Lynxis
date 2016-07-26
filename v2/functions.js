@@ -13,7 +13,7 @@ function printDoc(){
 
 function getCaretPosition(){
 	var sel=window.getSelection();
-	if(sel.rangeCount&&mode=="edit"){return sel.getRangeAt(0).endOffset;}
+	if(sel.rangeCount&&editing=="edit"){return sel.getRangeAt(0).endOffset;}
 }
 
 function caretAtEnd(){
@@ -23,15 +23,50 @@ function caretAtEnd(){
 
 function caretAtStart(){
 	var range=window.getSelection().getRangeAt(0);
-	return !range.collapsed||range.endOffset==0&&range.commonAncestorContainer.length;
+	return range.collapsed&&range.endOffset==0;
 }
 
-//.startOffset
-//.startContainer
-//.endContainer
-//https://developer.mozilla.org/en-US/docs/Web/API/Range
+function appendDiv(text,id,font){
+	var div=$('<div><br></div>');
+	div.attr("class","h0").attr("contenteditable", editing).data("MathJax", true);
+	tbox.append(div);
+	setEvents(div);
+	if(id){ div.attr("id", id).attr("class", font) }
+	if(text){ div.text(text) }
+	div.focus();
+}
 
-// function isDivEmpty(){
-// 	var range=window.getSelection().getRangeAt(0);
-// 	return !range.collapsed||range.endOffset==0&&range.commonAncestorContainer.length;
-// }
+function getRelTo(node,id){
+	if(node.synapses&&node.synapses[0]){
+		for(var i in node.synapses){
+			if(node.synapses[i].objid==id){
+				return node.synapses[i].relation;
+			}
+		}
+	}
+	return "_";
+}
+
+// inserts lines with maximum recursion that can be fit into one page
+function parse_SQL(data){
+    r=1;
+    while(count(data,r+1)<numLines&&!(count(data,r+1)==count(data,r))){r++;}
+    insertHTML(data,r,r);
+}
+
+// returns number of lines that will result from using r iterations of link recursion
+function count(data,r){
+    var num=0;
+    for(i in data){
+        if(data[i].objid==0){num++;}
+        if(data[i].synapses&&r){num+=count(data[i].synapses,r-1);}
+    }
+    return num;
+}
+
+function toggleEditing(){
+	update();
+	editing=!editing;
+	$(tbox.children()).attr("contenteditable", editing);
+	$("#editing").text("Editing: "+editing);
+}

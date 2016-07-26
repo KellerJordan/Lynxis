@@ -3,7 +3,7 @@ body {
 }
 #options {
     position: fixed;
-    background-color: transparent;
+    back round-color: transparent;
 }
 #container {
     box-shadow: 0px 0px 2px #888888;
@@ -33,15 +33,19 @@ form{
 #textbox>div{
     line-height: 1.3636364256198375281744330988379;
 }
-.second {
-    padding-top: 20px;
-    font-weight: bold;
-    line-height: 20px;
-    font-size: 14.666666px;
-}
 
-.third {
+.h2 {
+    padding-top: 26px;
     font-weight: bold;
     line-height: 26px;
     font-size: 18.666666px;
 }
+
+.h1 {
+    padding-top: 20px;
+    font-weight: bold;
+}
+
+.h0 { }
+
+.h-1 { margin-left: 40px; }
