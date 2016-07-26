@@ -1,4 +1,4 @@
-var objectList={}, pageLoaded=true, numLines=42, prevNode;
+var pageLoaded=true, numLines=42, prevNode;
 
 function query(callback,subid,type,objid,relation){
     $.post("reader.php", {
@@ -32,7 +32,6 @@ function insertHTML(data,r,r0){
         if(obj.objid!=0){
             var nodeText=getRelTo(obj,0);
             appendDiv(nodeText, obj.objid, "h"+(r-Math.ceil(r0/2)));
-            objectList[obj.objid]=nodeText;
             // recurse to children of processed node
             if(r){insertHTML(obj.synapses,r-1,r0);}
         } 
@@ -63,7 +62,6 @@ function setEvents(node){
                 e.preventDefault();
                 if(!$(this).text().length&&(this.id)&&confirm("Would you like to delete "+this.id+"?")){
                     query(function(){},this.id,"del");
-                    delete objectList[this.id];
                     $(this).remove();
                 }else{
                     if(!$(this).text().length){
@@ -107,17 +105,14 @@ function update(node){
         var nodeText=$(node).text();
         // node exists in system
         if(node.id){
-            objectList[node.id]=nodeText;
-            query(function(){},root,"rel",node.id,nodeText.replace(/\\/g,'\\'));
+            query(function(){}, root, "rel", node.id, nodeText.replace(/\\/g,'\\'));
         }
-        // node just created
+        // node not in system yet
         else{
             // update server side, then client side from server side giving correct objid
-            query(function(data){
-                $(node).attr("id",data);
-                objectList[data]=nodeText;
-            },root,"rel","",nodeText.replace(/\\/g,'\\'));
+            query(function(data){ $(node).attr("id",data); }, root, "rel", "", nodeText.replace(/\\/g,'\\'));
         }
+        $(node).data("text",nodeText);
     }
 }
 
@@ -133,7 +128,7 @@ function renderMathJax(node){
     // might need to split pageLoaded into two vars here
     if(node&&node.id){
         MathJax.Hub.Queue(function(){
-            $(node).text(objectList[node.id]).data("MathJax",false);
+            $(node).text($(node).data("text")).data("MathJax",false);
         });
     }
     // node.attr("contenteditable",editing);
