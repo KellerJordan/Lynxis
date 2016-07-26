@@ -27,11 +27,13 @@ function loadPage(id){
 }
 
 function insertHTML(data,r,r0){
+    var first=true;
     for(i in data){
         obj=data[i];
         if(obj.objid!=0){
             var nodeText=getRelTo(obj,0);
-            appendDiv(nodeText, obj.objid, "h"+(r-Math.ceil(r0/2)));
+            appendDiv(nodeText, obj.objid, "h"+(r-Math.ceil(r0/2)),first);
+            first=false;
             // recurse to children of processed node
             if(r){insertHTML(obj.synapses,r-1,r0);}
         } 
@@ -45,56 +47,31 @@ function setEvents(node){
     node.on("click keydown", function(e){
         if((this!=prevNode)&&(editing)){ update(prevNode); }
         switch(e.which){
-            case 13: //enter
-            e.preventDefault();
-            //set caret to end of line, then insert new node
-            var sel=window.getSelection();
-            var range=sel.getRangeAt(0);
-            var node=range.commonAncestorContainer;
-            range.setStart(node,node.length);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-            appendDiv();
-            break;
             case 8: //backspace
             if(caretAtStart()){
                 e.preventDefault();
-                if(!$(this).text().length&&(this.id)&&confirm("Would you like to delete "+this.id+"?")){
+                if((this.id!="0")&&confirm("Would you like to delete "+this.id+"?")){
                     query(function(){},this.id,"del");
-                    $(this).remove();
-                }else{
-                    if(!$(this).text().length){
-                        $(this).remove();
-                    }
                 }
+                $(this).remove();
             }
             break;
+            case 9: //tab
+            update(prevNode);
+            renderMathJax();
+            break;
+            case 13: //enter
+            e.preventDefault();
+            appendDiv();
+            break;
         }
-    });
 
-    // MathJaX overwriting and page loading
-    node.on("click", function(){
-        if(!editing){ loadPage(this.id) }
+        // MathJaX overwriting and page loading
         if(editing){
             if($(this).data("MathJax")&&this!=prevNode){
-                //get caret position
-                // var sel=window.getSelection();
-                // var range=sel.getRangeAt(0);
-                // var offset=range.startOffset;
-
-                // CARET POSITIONING IS CURRENTLY BROKEN
-
-                //insert new text, which sets caret position to 0
-                renderMathJax(this);
-
-                //set caret position back to what it was
-                // range.setStart(this.childNodes[0],offset);
-                // range.collapse(true);
-                // sel.removeAllRanges();
-                // sel.addRange(range);
+                renderMathJax(this,window.getSelection().getRangeAt(0).startOffset);
             }
-        }
+        }else{ loadPage(this.id) }
         prevNode=this;
     });
 }
@@ -116,14 +93,13 @@ function update(node){
     }
 }
 
-function renderMathJax(node){
+function renderMathJax(node,offset){
     // renders MathJax for all but node argument
     pageLoaded=false;
     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
     MathJax.Hub.Queue(function(){
         pageLoaded=true;
         $(tbox.children()).data("MathJax",true);
-        // .attr("contenteditable",false);
     });
     // might need to split pageLoaded into two vars here
     if(node&&node.id){
@@ -131,5 +107,16 @@ function renderMathJax(node){
             $(node).text($(node).data("text")).data("MathJax",false);
         });
     }
-    // node.attr("contenteditable",editing);
+    // set caret position to approximation of what the user wants -- this function needs improvement (detect MathJax before cursor and add to offset?)
+    if(offset){
+        MathJax.Hub.Queue(function(){
+            var sel=window.getSelection();
+            var range=sel.getRangeAt(0);
+            range.setStart(node.firstChild,offset);
+            range.setEnd(node.firstChild,offset);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        });
+    }
+    // add something that puts a ":" after every set name other than viewed
 }

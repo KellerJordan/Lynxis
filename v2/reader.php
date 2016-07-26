@@ -7,6 +7,7 @@ function recurseData($subid,$depth){
         foreach($con->query("SELECT relid,objid,relation FROM synapses WHERE subid='$subid' ORDER BY primarity") as $row){
             array_push($return,["relation"=>$row["relation"],"objid"=>$row["objid"],"synapses"=>recurseData($row["objid"],$depth-1)]);
             //"relid"=>$row["relid"],
+            //"primarity"=>$row["primarity"]
         }
     return $return;
 }

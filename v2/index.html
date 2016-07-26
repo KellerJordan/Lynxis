@@ -16,25 +16,21 @@
 		</div>
 		<div><a target="_blank" href="http://s1.daumcdn.net/editor/fp/service_nc/pencil/Pencil_chromestore.html">Daum Equation Editor</a></div> 
 	</div>
-	<form>
-		<img class="intLink" title="Print" onclick="printDoc();" src="icons/print.png" />
-		<img class="intLink" title="Numbered list" onclick='formatDoc("insertorderedlist");' src='icons/numberedlist.gif' />
-		<!-- <img class="intLink" title="Dotted list" onclick='formatDoc("insertunorderedlist");' src='icons/dottedlist.gif' /> -->
-		<!-- <img class="intLink" title="Hyperlink" onclick="var sLnk=prompt('Write the URL here','http:\/\/');if(sLnk&&sLnk!=''&&sLnk!='http://'){formatDoc('createlink',sLnk)}" src="icons/hyperlink.gif" /> -->
-	</form>
-	<div id="container">
-		<div id="textBox" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
-	</div>
+	<form><img class="intLink" title="Print" onclick="printDoc();" src="icons/print.png" /></form>
+	<div id="container"><div id="textBox" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div></div>
 </body>
 <script>
 
-var editing=false, root, oroot=100, tbox=$("#textBox");
+var editing=false, root, oroot=300, tbox=$("#textBox");
 
 $(document).keydown(function(e){
 	if(!editing){
 		switch(e.which){
 			case 81: //q
 			loadPage(oroot);
+			break;
+			case 87: //w
+			loadPage(prompt("Enter page ID"));
 			break;
 	    }
 	}else{

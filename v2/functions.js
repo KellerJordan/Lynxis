@@ -26,9 +26,10 @@ function caretAtStart(){
 	return range.collapsed&&range.endOffset==0;
 }
 
-function appendDiv(text,id,font){
+function appendDiv(text,id,font,first){
 	var div=$('<div><br></div>');
 	div.attr("class","h0").attr("contenteditable", editing).data("MathJax", true).data("text", text);
+	if(first){ div.attr("style","padding-top: 0px") }
 	tbox.append(div);
 	setEvents(div);
 	if(id){ div.attr("id", id).attr("class", font) }
@@ -69,4 +70,12 @@ function toggleEditing(){
 	editing=!editing;
 	$(tbox.children()).attr("contenteditable", editing);
 	$("#editing").text("Editing: "+editing);
+	// if(editing){
+	// 	$(tbox.children()[0]).focus();
+	// }
+	if(editing){
+		$(tbox.children()).attr("")
+	}else{
+
+	}
 }
