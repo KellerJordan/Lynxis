@@ -2,7 +2,7 @@
 WIP information viewing and writing interface. Final version will incorporate TeX editing API, as well as supporting creation of flow chart style notes and tables. 
 
 Screenshots of version history:
-v3 (d3 test run, no user input):
+v3 (d3 test run, no user input, not my code):
 ![image](https://cloud.githubusercontent.com/assets/18433116/17126137/339add42-52af-11e6-9878-09213fbb0c3d.png)
 v2 (text display only, added text editing through contenteditable web api):
 ![image](https://cloud.githubusercontent.com/assets/18433116/17126123/1bcbd96e-52af-11e6-8560-58cb20e1cd5f.png)
