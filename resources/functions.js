@@ -56,10 +56,5 @@ function toggleEditing(){
 	editing=!editing;
 	$(tbox.children()).attr("contenteditable", editing);
 	$("#editing").text("Editing: "+editing);
-	// hovering
-	// if(editing){
-	// 	$(tbox.children()).attr("")
-	// }else{
-
-	// }
+	tbox.focus();
 }

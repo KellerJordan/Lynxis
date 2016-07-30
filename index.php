@@ -53,13 +53,13 @@ $(document).on("keydown", function(e){
 	if (e.ctrlKey&&e.which==80) { printDoc() }
 	switch (e.which) {
 		case 83: //s
-        if(e.ctrlKey){ query(function(){}, "", "backup"); console.log("Data saved to backup"); }
-        break;
-        case 9: //tab
-        if (!$(document.activeElement.parentElement).is("form")) {
-        	e.preventDefault();
-			toggleEditing();
-        }
+		if(e.ctrlKey){ query(function(){}, "", "backup"); console.log("Data saved to backup"); }
+		break;
+		case 9: //tab
+		if (!$(document.activeElement.parentElement).is("form")) {
+			e.preventDefault();
+			if ('<?php echo $_SESSION["write"]; ?>') { toggleEditing() } else { alert("Sorry, you are not logged in with write permissions.") }
+		}
 	}
 });
 

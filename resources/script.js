@@ -43,38 +43,37 @@ function insertHTML(data,r,r0){
 
 function setEvents(node){
     //box shadow hovering
-    node.hover(function(){ if(!editing){ $(this).css("box-shadow", "0px 0px 2px #888888") } }, function(){ $(this).css("box-shadow", "none") });
+    node.hover(function() { if(!editing){ $(this).css("box-shadow", "0px 0px 2px #888888") } }, function(){ $(this).css("box-shadow", "none") } );
 
-    node.on("click keydown", function(e){
-        if((this!=prevNode)&&(editing)){ update(prevNode); }
-        switch(e.which){
-            case 8: //backspace
-            if(caretAtStart()){
-                e.preventDefault();
-                if(confirm("Would you like to delete "+this.id+"?")){
-                    if(this.id){ query(function(){}, this.id, "del") }
-                    $(this).remove();
+    node.on("focusin click", function(e) {
+        if (editing) {
+            if (this != prevNode) { update(prevNode) }
+            switch (e.which) {
+                case 8: //backspace
+                if (caretAtStart()) {
+                    e.preventDefault();
+                    if (confirm("Would you like to delete "+this.id+"?")) {
+                        if (this.id) { query(function(){}, this.id, "del") }
+                        $(this).remove();
+                    }
                 }
+                break;
+                case 9: //tab
+                update(prevNode);
+                renderMathJax();
+                break;
+                case 13: //enter
+                e.preventDefault();
+                appendDiv();
+                break;
             }
-            break;
-            case 9: //tab
-            update(prevNode);
-            renderMathJax();
-            break;
-            case 13: //enter
-            e.preventDefault();
-            appendDiv();
-            break;
-        }
-
-        // MathJaX overwriting and page loading
-        if(editing){
-            if($(this).data("MathJax")&&this!=prevNode){
+            // MathJaX overwriting and page loading
+            if ($(this).data("MathJax") && this != prevNode) {
                 renderMathJax(this,window.getSelection().getRangeAt(0).startOffset);
             }
-        }else{ loadPage(this.id) }
+        } else { loadPage(this.id) }
         prevNode=this;
-    });
+    } );
 }
 
 function update(node){
