@@ -1,3 +1,9 @@
+<?php
+	session_start();
+	if (!isset($_SESSION['username'])) {
+		header('Refresh: 0; URL = /lynxis/login.php');
+	}
+?>
 <html>
 <head><title>Lynxis</title></head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -9,21 +15,22 @@
 	<div id="options">
 		<div id="editing">Editing: false</div>
 		<div>
-			<br>In view mode:
-			<br>Q: load oroot node
+			<br>The 'Tab' button switches between modes.
+			<br>While in viewing mode, the 'Q' button loads the root node.
 		</div>
 		<div><a target = "_blank" href = "http://s1.daumcdn.net/editor/fp/service_nc/pencil/Pencil_chromestore.html">Write MathJax text</a></div>
 		<div><a href = "/lynxis/display.html">View Informational Structure</a></div>
 		<img class = "intLink" title = "Print" onclick="printDoc();" src = "resources/icons/print.png" />
 	</div>
 	<div id = "forms">
-		<form action = "resources/login.php" method = "post">
-			<input type = "text" name = "username" placeholder = "username" required /><br>
-			<input type = "password" name = "password" placeholder = "password" required /><br>
+		<form action = "login.php" method = "post">
+			<input type = "text" name = "username" placeholder = "username" /><br>
+			<input type = "password" name = "password" placeholder = "password" /><br>
 			<input id = "login" type = "submit" name = "login" value = "login" />
-			<input id= "newaccount" type = "submit" name = "newaccount" value = "new account" />
 			<input id = "logout" type = "submit" name = "logout" value = "logout" />
 		</form>
+		<br>
+		Logged in as: <?php echo $_SESSION['username']; ?>
 	</div>
 	<div id = "container"><div id = "textBox" autocomplete = "off" autocorrect = "off" autocapitalize = "off" spellcheck = "false"></div></div>
 </body>
@@ -31,9 +38,9 @@
 
 var editing=false, root, oroot=42, tbox=$("#textBox");
 
-$(document).keydown(function(e){
-	if(!editing){
-		switch(e.which){
+$(document).on("keydown", function(e){
+	if (!editing && !$(document.activeElement.parentElement).is("form")) {
+		switch (e.which) {
 			case 81: //q
 			loadPage(oroot);
 			break;
@@ -42,19 +49,17 @@ $(document).keydown(function(e){
 			break;
 	    }
 	}
-	if([18,46].indexOf(e.which)!=-1||e.ctrlKey&&!([65,67,86,89,90].indexOf(e.which)!=-1)){e.preventDefault();}
-	if(e.ctrlKey&&e.which==80){printDoc();}
-	switch(e.which){
+	if ([18,46].indexOf(e.which) != -1 || e.ctrlKey && !([65,67,86,89,90].indexOf(e.which) != -1)) { e.preventDefault() }
+	if (e.ctrlKey&&e.which==80) { printDoc() }
+	switch (e.which) {
 		case 83: //s
         if(e.ctrlKey){ query(function(){}, "", "backup"); console.log("Data saved to backup"); }
         break;
-	}
-});
-
-$(document).on("keydown", function(e){
-	if(e.which==9){ //tab
-		e.preventDefault();
-		toggleEditing();
+        case 9: //tab
+        if (!$(document.activeElement.parentElement).is("form")) {
+        	e.preventDefault();
+			toggleEditing();
+        }
 	}
 });
 
