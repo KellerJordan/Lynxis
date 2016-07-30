@@ -1,9 +1,12 @@
 # Lynxis
-Lynxis is an information viewing and writing interface. Rather than storing text as a linear file, all information is stored as a system of informational nodes and relations.
+Lynxis is an interface for the reading and writing of relational mathematics notes.
 
-Project hosted at [lynxis.org](http://lynxis.org/lynxis/resources/login.php).
+Check out the project at [lynxis.org](http://lynxis.org/lynxis/resources/login.php)!
 
-Screenshots of version history:
+Display in heading form:
+
+Display in network form:
+![image](https://cloud.githubusercontent.com/assets/18433116/17272036/ec1acba4-5640-11e6-8a0c-e8484bc2b3b7.png)
 
 Version History:
 v1 (combined nested bubbles with text display):
