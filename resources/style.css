@@ -1,10 +1,21 @@
 body {
     background-color: rgb(240,240,240);
 }
+
 #options {
     position: fixed;
-    back round-color: transparent;
+    left: 0px;
+    background-color: transparent;
 }
+
+#forms{
+    position: fixed;
+    right: 0px;
+}
+
+#login { float: left; }
+#logout { float: right; }
+
 #container {
     box-shadow: 0px 0px 2px #888888;
     width: 822px;
@@ -18,7 +29,7 @@ label { cursor: pointer; }
 form{
     float: right;
     text-align: right;
-    -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;
+    /*-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;*/
 }
 
 #textBox {

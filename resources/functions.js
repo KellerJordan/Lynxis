@@ -1,24 +1,12 @@
 //constants
 var golden=(1+Math.sqrt(5))/2, wWidth=$(window).width()-16, wHeight=$(window).height()-16;
 
-function formatDoc(sCmd, sValue){document.execCommand(sCmd, false, sValue);}
-
 function printDoc(){
 	var myWindow=window.open();
 	myWindow.document.open();
 	myWindow.document.write('<html><head><link rel="stylesheet" href="style.css"></head><body><div id="container" style="border: 1px solid black;">'+$('#container').html()+'</div></body></html>');
 	$(myWindow.document).ready(function(){myWindow.print();});
 	myWindow.close();
-}
-
-function getCaretPosition(){
-	var sel=window.getSelection();
-	if(sel.rangeCount&&editing=="edit"){return sel.getRangeAt(0).endOffset;}
-}
-
-function caretAtEnd(){
-	var range=window.getSelection().getRangeAt(0);
-	return (range.commonAncestorContainer.length==range.endOffset)&&range.collapsed;
 }
 
 function caretAtStart(){
@@ -40,9 +28,7 @@ function appendDiv(text,id,font,first){
 function getRelTo(node,id){
 	if(node.synapses&&node.synapses[0]){
 		for(var i in node.synapses){
-			if(node.synapses[i].objid==id){
-				return node.synapses[i].relation;
-			}
+			if(node.synapses[i].objid==id){ return node.synapses[i].relation }
 		}
 	}
 	return "_";
@@ -51,7 +37,7 @@ function getRelTo(node,id){
 // inserts lines with maximum recursion that can be fit into one page
 function parse_SQL(data){
     r=1;
-    while(count(data,r+1)<numLines&&!(count(data,r+1)==count(data,r))){r++;}
+    while((count(data,r+1) < numLines) && !(count(data,r+1) == count(data,r))){ r++ }
     insertHTML(data,r,r);
 }
 
@@ -59,8 +45,8 @@ function parse_SQL(data){
 function count(data,r){
     var num=0;
     for(i in data){
-        if(data[i].objid==0){num++;}
-        if(data[i].synapses&&r){num+=count(data[i].synapses,r-1);}
+        if(data[i].objid==0){ num++ }
+        if(data[i].synapses&&r){ num+=count(data[i].synapses,r-1) 	}
     }
     return num;
 }
@@ -70,12 +56,10 @@ function toggleEditing(){
 	editing=!editing;
 	$(tbox.children()).attr("contenteditable", editing);
 	$("#editing").text("Editing: "+editing);
+	// hovering
 	// if(editing){
-	// 	$(tbox.children()[0]).focus();
-	// }
-	if(editing){
-		$(tbox.children()).attr("")
-	}else{
+	// 	$(tbox.children()).attr("")
+	// }else{
 
-	}
+	// }
 }
