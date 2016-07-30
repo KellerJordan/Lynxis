@@ -1,5 +1,5 @@
 # Lynxis
-Lynxis is an interface for the reading and writing of relational mathematics notes.
+Lynxis is an interface for the reading and writing of relational mathematics notes. Users can read and write to their own note structures, as well as being able to access note structures created by other users.
 
 Check out the project at [lynxis.org](http://lynxis.org/lynxis/resources/login.php)!
 
