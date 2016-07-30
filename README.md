@@ -1,7 +1,7 @@
 # Lynxis
 Lynxis is an information viewing and writing interface. Rather than storing text as a linear file, all information is stored as a system of informational nodes and relations.
 
-Check it out at [lynxis.org](http://lynxis.org/lynxis/resources/login.php)
+Project hosted at [lynxis.org](http://lynxis.org/lynxis/resources/login.php).
 
 Screenshots of version history:
 
