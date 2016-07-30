@@ -1,5 +1,7 @@
-# Synapsis
-WIP information viewing and writing interface. Final version will incorporate TeX editing API, as well as supporting creation of flow chart style notes and tables. 
+# Lynxis
+Lynxis is an information viewing and writing interface. Rather than storing text as a linear file, all information is stored as a system of informational nodes and relations.
+
+Check it out at [lynxis.org](http://lynxis.org/lynxis/resources/login.php)
 
 Screenshots of version history:
 v3 (d3 test run, no user input, not my code):
