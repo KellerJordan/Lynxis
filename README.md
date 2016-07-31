@@ -21,6 +21,7 @@ Check out the project at [lynxis.org](http://lynxis.org/)!
  * Selection of a node will de-parse rendered MathJax in order for user to edit text
 * Text editing built around Contenteditable API with certain keys remapped
 
+## Screenshot Examples:
 ### Heading Form:
 ![image](https://cloud.githubusercontent.com/assets/18433116/17279672/4a8f72e0-572f-11e6-96bd-3398808d9816.png)
 
