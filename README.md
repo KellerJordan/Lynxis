@@ -1,5 +1,13 @@
 # Lynxis
-Lynxis is an interface for the reading and writing of relational mathematics notes. Users can read and write to their own note structures, as well as being able to access note structures created by other users.
+Lynxis is a text editing interface intended to be used for note-taking, especially in mathematics courses. Rather than storing notes as a linear file, user input is stored as network of relationships between informational nodes. This opens up a wide range of possibilities.
+
+## Inherent Benefits of the Structure
+* Navigation of large documents is constrained not by the length of the document, but by the 'depth' (number of structure junctions between starting node and ending node)
+* Potential for graphical display of structure - useless but interesting example at lynxis.org/display.html
+* Potential for algorithm usage to emphasize important information
+* Information the user is unfamiliar with and wishes to learn
+* Nodes frequently visitied or recently edited by user
+* Closer representation of the way information actually exists in the mind
 
 Check out the project at [lynxis.org](http://lynxis.org/)!
 
