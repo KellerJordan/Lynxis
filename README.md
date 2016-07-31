@@ -4,7 +4,7 @@ Lynxis is an interface for the reading and writing of relational mathematics not
 Check out the project at [lynxis.org](http://lynxis.org/)!
 
 ### Heading Form:
-![image](https://cloud.githubusercontent.com/assets/18433116/17275187/b8d55d7c-56b3-11e6-85dd-7c803b7efcbf.png)
+![image](https://cloud.githubusercontent.com/assets/18433116/17279672/4a8f72e0-572f-11e6-96bd-3398808d9816.png)
 
 ### Network Form:
 ![image](https://cloud.githubusercontent.com/assets/18433116/17275193/07bf4240-56b4-11e6-92fc-cba1c3621349.png)
