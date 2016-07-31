@@ -1,62 +1,62 @@
 body {
-    background-color: rgb(240,240,240);
+  background-color: rgb(240,240,240);
 }
 
 #options {
-    position: fixed;
-    left: 0px;
-    background-color: transparent;
+  position: fixed;
+  left: 0px;
+  background-color: transparent;
 }
 
 #forms{
-    position: fixed;
-    right: 0px;
+  position: fixed;
+  right: 0px;
 }
 
 #login { float: left; }
 #logout { float: right; }
 
 #container {
-    box-shadow: 0px 0px 2px #888888;
-    width: 822px;
-    height: 1064px;
-    margin: auto;
-    background-color: white;
+  box-shadow: 0px 0px 2px #888888;
+  width: 822px;
+  height: 1064px;
+  margin: auto;
+  background-color: white;
 }
 
 .intLink { cursor: pointer; }
 label { cursor: pointer; }
 form{
-    float: right;
-    text-align: right;
-    /*-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;*/
+  float: right;
+  text-align: right;
+  /*-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none;*/
 }
 
 #textBox {
-    outline: 0px solid transparent;
-    padding: 96px;
-    height: 862px;
-    font-family: arial;
-    font-size: 14.666666666666px;
-    line-height: 20px;
+  outline: 0px solid transparent;
+  padding: 96px;
+  height: 862px;
+  font-family: arial;
+  font-size: 14.666666666666px;
+  line-height: 20px;
 }
 
 #textbox>div{
-    line-height: 1.3636364256198375281744330988379;
+  line-height: 1.3636364256198375281744330988379;
 }
 
-.h2 {
-    padding-top: 26px;
-    font-weight: bold;
-    line-height: 26px;
-    font-size: 18.666666px;
+.t2 {
+  padding-top: 26px;
+  font-weight: bold;
+  line-height: 26px;
+  font-size: 18.666666px;
 }
 
-.h1 {
-    padding-top: 20px;
-    font-weight: bold;
+.t1 {
+  padding-top: 20px;
+  font-weight: bold;
 }
 
-.h0 { }
+.t0 { }
 
-.h-1 { margin-left: 40px; }
+.t-1 { margin-left: 40px; }

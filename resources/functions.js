@@ -16,7 +16,7 @@ function caretAtStart(){
 
 function appendDiv(text,id,font,first){
 	var div=$('<div><br></div>');
-	div.attr("class","h0").attr("contenteditable", editing).data("MathJax", true).data("text", text);
+	div.attr("class","t0").attr("contenteditable", editing).data("MathJax", true).data("text", text);
 	if(first){ div.attr("style","padding-top: 0px") }
 	tbox.append(div);
 	setEvents(div);

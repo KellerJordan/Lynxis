@@ -33,7 +33,7 @@ function insertHTML(data,r,r0){
         obj=data[i];
         if(obj.objid!=0){
             var nodeText=getRelTo(obj,0);
-            appendDiv(nodeText, obj.objid, "h"+(1-Math.ceil(r0/2)+r),first);
+            appendDiv(nodeText, obj.objid, "t"+(1-Math.ceil(r0/2)+r),first);
             first=false;
             // recurse to children of processed node
             if(r){ insertHTML(obj.synapses,r,r0) }

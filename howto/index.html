@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Lynxis</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+body { padding-top: 70px; }
+</style>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Lynxis.org</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/features">Features</a></li>
+      <li class="active"><a href="howto">Instructions</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Other Projects<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="/projects/Vector-Playground">Vector Sandbox</a></li>
+          <li><a href="/projects/Dota2-Drafter">Dota 2 Drafter</a></li>
+        </ul>
+      </li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <center>
+    <h1 class="page-header">How to use the Lynxis Interface</h1>
+  </center>
+  <div class="col-md-4 col-md-offset-4">
+    <ul class="lead">
+      <li>Press 'tab' to switch between edit and view mode</li>
+      <li>In view mode:</li>
+      <ul>
+        <li>Click a node to load that node's relation page</li>
+        <li>Press 'q' to load the page for the root node</li>
+        <li>Press 'w' to input a node id to load the page for</li>
+      </ul>
+      <li>In edit mode:</li>
+      <ul>
+        <li>Click a node to de-parse MathJax and edit the node's text</li>
+        <li>Press 'backspace' with caret at beginning of node to delete node</li>
+        <li>Press 'enter' to create a new node with relationship 'contains' to root node at end of document</li>
+      </ul>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
