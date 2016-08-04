@@ -12,28 +12,28 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <body>
 <?php
-    if (isset($_POST['login'])) {
+    if(isset($_POST['login'])){
         if (!empty($_POST['username']) && !empty($_POST['password']) && mysqli_connect("localhost", $_POST['username'], $_POST['password'], "synapseDB")) {
             $_SESSION['timeout'] = time();
             $_SESSION['username'] = $_POST['username'];
             $_SESSION['password'] = $_POST['password'];
             $_SESSION['write'] = TRUE;
             echo 'Success logging in.';
-        } else {
+        }else{
             echo 'Failure logging in.';
         }
     } 
-    if (isset($_POST['logout'])) {
+    if(isset($_POST['logout'])){
         echo 'Success logging out.';
     }
     echo '<br>Redirecting...';
     header('Refresh: 1.5; URL = /');
-    $newacc=FALSE;
+    $newacc = FALSE;
 ?>
 <form id="createacc" hidden="true">
-    <input type = "text" name = "username" placeholder = "username" /><br>
-    <input type = "password" name = "password" placeholder = "password" /><br>
-    <input id = "login" type = "submit" name = "login" value = "login" />
+    <input type="text" name="username" placeholder="username" /><br>
+    <input type="password" name="password" placeholder="password" /><br>
+    <input id="login" type="submit" name="login" value="login" />
 </form>
 </body>
 <script>

@@ -1,8 +1,6 @@
 <?php
 	session_start();
-	if (!isset($_SESSION['username'])) {
-		header('Refresh: 0; URL = /login.php');
-	}
+	if(!isset($_SESSION['username'])){ header('Refresh: 0; URL = /login.php'); }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +15,7 @@
 	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"></script>
 	<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
 	<style>
-	body { padding-top: 70px; }
+	body{ padding-top: 70px }
 	</style>
 <body>
 
@@ -47,13 +45,9 @@
 
 	<div id="options">
 		<div id="editing">Editing: false</div>
-		<div>
-			<br>The 'Tab' button switches between modes.
-			<br>While in viewing mode, the 'Q' button loads the root node.
-		</div>
 		<div><a target="_blank" href="http://s1.daumcdn.net/editor/fp/service_nc/pencil/Pencil_chromestore.html">Write MathJax text</a></div>
 		<div><a href="/display.html">View Informational Structure</a></div>
-		<button type="button" class="btn btn-default btn-lg" onclick="printDoc()">
+		<button type="button" class="btn btn-default btn-lg" onclick="printDoc()" style="display: none">
 			<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
 		</button>
 	</div>
@@ -71,29 +65,29 @@
 </body>
 <script>
 
-var editing=false, root, oroot=42, tbox=$("#textBox");
+var editing = false, root, oroot = 42, tbox = $("#textBox");
 
 $(document).on("keydown", function(e){
-	if (!editing && !$(document.activeElement.parentElement).is("form")) {
-		switch (e.which) {
+	if(!editing && !$(document.activeElement.parentElement).is("form")){
+		switch(e.which){
 			case 81: //q
-			loadPage(oroot);
+			loadPage(42);
 			break;
 			case 87: //w
 			loadPage(prompt("Enter page ID: "));
 			break;
 	    }
 	}
-	if ([18,46].indexOf(e.which) != -1 || e.ctrlKey && !([65,67,86,89,90].indexOf(e.which) != -1)) { e.preventDefault() }
-	if (e.ctrlKey&&e.which==80) { printDoc() }
-	switch (e.which) {
+	if([18,46].indexOf(e.which) != -1 || e.ctrlKey && !([65,67,86,89,90].indexOf(e.which) != -1)){ e.preventDefault() }
+	if(e.ctrlKey && e.which == 80){ printDoc() }
+	switch(e.which){
 		case 83: //s
 		if(e.ctrlKey){ query(function(){}, "", "backup"); console.log("Data saved to backup"); }
 		break;
 		case 9: //tab
-		if (!$(document.activeElement.parentElement).is("form")) {
+		if(!$(document.activeElement.parentElement).is("form")){
 			e.preventDefault();
-			if ('<?php echo $_SESSION["write"]; ?>') { toggleEditing() } else { alert("Sorry, you are not logged in with write permissions.") }
+			if('<?php echo $_SESSION["write"]; ?>'){ toggleEditing() }else{ alert("Sorry, you are not logged in with write permissions.") }
 		}
 	}
 });

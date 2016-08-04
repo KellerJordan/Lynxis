@@ -18,17 +18,11 @@
     stroke-width: 1.5px;
   }
 
-  #licensing {
-    fill: green;
-  }
+  #licensing { fill: green }
 
-  .link.licensing {
-    stroke: green;
-  }
+  .link.licensing { stroke: green }
 
-  .link.resolved {
-    stroke-dasharray: 0,2 1;
-  }
+  .link.resolved { stroke-dasharray: 0,2 1 }
 
   circle {
     fill: #ccc;
@@ -42,7 +36,7 @@
     text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
   }
 
-  body { padding-top: 70px; }
+  body { padding-top: 70px }
   
   </style>
 <body>
@@ -71,7 +65,7 @@
   </div>
 </nav>
 
-  <div style="position:fixed">Data display from <a href="http://bl.ocks.org/mbostock/1153292">http://bl.ocks.org/mbostock/1153292</a><br>MathJax rendering not currently supported<br><a href="/lynxis">Click to go back to editing interface</a></div>
+  <div style="position:fixed">Data display from <a href="http://bl.ocks.org/mbostock/1153292">http://bl.ocks.org/mbostock/1153292</a><br>MathJax rendering not currently supported<br><a href="/">Click to go back to editing interface</a></div>
 
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -82,27 +76,24 @@
 var links=[],nodes,width,height,force,svg,path,circle,text;
 
 function query(callback,subid,type,objid,relation){
-    $.post("resources/reader.php",{
+    $.post("resources/reader.php", {
         type:type,
         subid:subid,
         objid:objid,
         relation:relation,
-    },function(data,status){
-        data=JSON.parse(data);
-        data.push({objid:"0",relation:"Information",synapses:[]});
-        data={objid:"42",relation:"contains",synapses:data};
+    }, function(data,status){
+        data = JSON.parse(data);
+        data.push({objid: "0", relation: "Information", synapses:[]});
+        data = {objid: "42", relation: "contains", synapses:data};
         callback(data);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     });
 }
 
 function getRelTo(node,id){
-  if(node.synapses&&node.synapses[0]){
-    for(var i in node.synapses){
-      if(node.synapses[i].objid==id){ return node.synapses[i].relation }
-    }
+  for(var i in node.synapses){
+    if(node.synapses[i].objid == id){ return node.synapses[i].relation }
   }
-  return "";
 }
 
 function loadPage(id){
@@ -114,10 +105,11 @@ function loadPage(id){
 
 function parseData(data){
   for(i in data.synapses){
-    obj=data.synapses[i];
-    var name1=getRelTo(data,0), name2=getRelTo(obj,0);
-    if(obj.synapses&&obj.synapses[0]&&name1&&name2){
-      links.push({source:name1,target:name2,type:"suit"});
+    obj = data.synapses[i];
+    if(obj.synapses)
+    var name1 = getRelTo(data, "0"), name2 = getRelTo(obj, "0");
+    if(obj.synapses && obj.synapses[0] && name1 && name2){
+      links.push({source: name1, target: name2, type: "suit"});
       parseData(obj);
     }
   }
@@ -184,7 +176,6 @@ text = svg.append("g").selectAll("text")
 
 loadPage(42);
 
-// Use elliptical arc path segments to doubly-encode directionality.
 function tick() {
   path.attr("d", linkArc);
   circle.attr("transform", transform);
@@ -194,7 +185,6 @@ function tick() {
 function linkArc(d) {
   var dx = d.target.x - d.source.x,
       dy = d.target.y - d.source.y,
-      // dr = Math.sqrt(dx * dx + dy * dy);
       dr = dx * dx + dy * dy;
   return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 }
