@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="resources/script.js"></script><script src="resources/functions.js"></script><link rel="stylesheet" href="resources/style.css">
   <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"></script>
   <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
   <style>
@@ -75,46 +74,6 @@
 
 var links=[],nodes,width,height,force,svg,path,circle,text;
 
-function query(callback,subid,type,objid,relation){
-    $.post("resources/reader.php", {
-        type:type,
-        subid:subid,
-        objid:objid,
-        relation:relation,
-    }, function(data,status){
-        data = JSON.parse(data);
-        data.push({objid: "0", relation: "Information", synapses:[]});
-        data = {objid: "42", relation: "contains", synapses:data};
-        callback(data);
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-    });
-}
-
-function getRelTo(node,id){
-  for(var i in node.synapses){
-    if(node.synapses[i].objid == id){ return node.synapses[i].relation }
-  }
-}
-
-function loadPage(id){
-    query(function(data){
-        parseData(data);
-        render();
-    },id,"get");
-}
-
-function parseData(data){
-  for(i in data.synapses){
-    obj = data.synapses[i];
-    if(obj.synapses)
-    var name1 = getRelTo(data, "0"), name2 = getRelTo(obj, "0");
-    if(obj.synapses && obj.synapses[0] && name1 && name2){
-      links.push({source: name1, target: name2, type: "suit"});
-      parseData(obj);
-    }
-  }
-}
-
 function render(){
 nodes = {};
 
@@ -174,8 +133,6 @@ text = svg.append("g").selectAll("text")
     .text(function(d) { return d.name; });
 }
 
-loadPage(42);
-
 function tick() {
   path.attr("d", linkArc);
   circle.attr("transform", transform);
@@ -192,5 +149,12 @@ function linkArc(d) {
 function transform(d) {
   return "translate(" + d.x + "," + d.y + ")";
 }
+
+$.post("resources/reader.php", {type:"network"}, function(data, status){
+  data=JSON.parse(data);
+  links=data;
+  render();
+  MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+});
 
 </script>

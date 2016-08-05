@@ -1,13 +1,13 @@
 var pageLoaded = true, prevNode;
 
 function query(callback, subid, type, objid, relation){
-    $.post("resources/reader.php", {
+    $.post("resources/writer.php", {
         type:type, 
         subid:subid, 
         objid:objid, 
         relation:relation
     }, function(data,status){
-        callback(JSON.parse(data))
+        callback(JSON.parse(data));
     });
 }
 
@@ -16,13 +16,13 @@ function loadPage(id){
         pageLoaded = false;
         tbox.html('');
         root = id;
-        query(function(data){
-            insertHTML(data, 3, 3);
+        $.post("resources/reader.php", {type:"tree", id:id}, function(data, status){
+            insertHTML(JSON.parse(data), 3, 3);
             if(!tbox.children().length){ appendDiv() }
             prevNode = undefined;
             renderMathJax();
             pageLoaded = true;
-        }, id, "get");
+        });
     }
 }
 
