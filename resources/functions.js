@@ -14,24 +14,14 @@ function caretAtStart(){
 	return range.collapsed && range.endOffset == 0;
 }
 
-function appendDiv(text, id, font, first){
+function appendDiv(node){
+	if(!node){ node = {"id":"", "class":"t0", "name":"", "first":false} }
 	var div = $('<div><br></div>');
-	div.attr("class", "t0").attr("contenteditable", editing).data("MathJax", true).data("text", text);
-	if(first){ div.attr("style", "padding-top: 0px") }
+	div.attr("id", node["id"]).attr("class", node["class"]).attr("contenteditable", editing).data("MathJax", true).data("text", node["name"]).text(node["name"]);
+	if(node["first"]){ div.attr("style", "padding-top: 0px") }
 	tbox.append(div);
 	setEvents(div);
-	if(id){ div.attr("id", id).attr("class", font) }
-	if(text){ div.text(text) }
 	div.focus();
-}
-
-function getRelTo(node,id){
-	if(node.synapses && node.synapses[0]){
-		for(var i in node.synapses){
-			if(node.synapses[i].objid == id){ return node.synapses[i].relation }
-		}
-	}
-	return "_";
 }
 
 function toggleEditing(){

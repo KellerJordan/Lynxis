@@ -1,28 +1,32 @@
 <?php
 
-// TREE PARSE
+// HEADING/TREE PARSE
 
-function parse_tree($subid){
-    $depth = 0;
-    $length = 0;
-    while($length < (3 * 25) && $length != count(recurseNodes($subid, $depth + 1), COUNT_RECURSIVE)){
+$headings = array();
+
+function parse_heading($id){
+    global $headings;
+    $depth = 0; $length = -1;
+    while(count($headings) < 40 && $length != count($headings)){
+        $length = count($headings);
+        $headings = array();
         $depth++;
-        $length = count(recurseNodes($subid, $depth), COUNT_RECURSIVE);
+        recurseNodes($id, $depth);
     }
-    return recurseNodes($subid, $depth);
+    $headings = array();
+    recurseNodes($id, $depth - 1);
+    return $headings;
 }
 
 function recurseNodes($subid, $depth){
+    if($depth <= 0){ return; }
     global $con;
-    $result = array();
-    foreach($con->query("SELECT relid, objid, relation FROM synapses WHERE subid='$subid' ORDER BY primarity") as $row){
-        if($depth > 0 || ($depth == 0 && $row["objid"] == "0")){
-            $object = ["relation"=>$row["relation"], "objid"=>$row["objid"]];
-            $object["synapses"] = recurseNodes($row["objid"], $depth - 1);
-            array_push($result, $object);
-        }
+    global $headings;
+    foreach($con->query("SELECT objid FROM synapses WHERE subid='$subid' ORDER BY primarity") as $row){
+        $id=$row["objid"];
+        if(getName($id)){ array_push($headings, ["id"=>$id, "name"=>getName($id), "class"=>"t".($depth - 1), "first"=>FALSE]);}
+        recurseNodes($id, $depth - 1);
     }
-    return $result;
 }
 
 
@@ -37,16 +41,19 @@ function parse_network(){
     return $result;
 }
 
+// GENERAL FUNCTIONS
+
 function getName($id){
     global $con;
     return $con->query("SELECT relation FROM synapses WHERE subid='$id' AND objid=0")->fetch_array()[0];
 }
 
+
 // need a function to assign a value to node
 
 session_start();
 $con = new mysqli("localhost", $_SESSION['username'], $_SESSION['password'], "synapseDB");
-if($_POST["type"] == "tree"){ echo json_encode(parse_tree($_POST["id"])); }
+if($_POST["type"] == "tree"){ echo json_encode(parse_heading($_POST["id"])); }
 if($_POST["type"] == "network"){ echo json_encode(parse_network()); }
 mysqli_close($con);
 

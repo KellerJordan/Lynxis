@@ -22,13 +22,13 @@ function getNodes(){
         // if name relation exists, update it
         if($con->query("SELECT * FROM synapses WHERE subid = '$subid' AND objid = '$objid'")->fetch_array()){
             $sql = "UPDATE synapses SET relation = ? WHERE subid = ? AND objid = ?";
-            $stmt=$con->prepare($sql);
+            $stmt = $con->prepare($sql);
             $stmt->bind_param("sss", $relation, $subid, $objid);
             $stmt->execute();
         // if it doesn't, create it
         }else{
             $sql = "INSERT INTO synapses (subid,objid,relation) VALUES (?, ?, ?)";
-            $stmt=$con->prepare($sql);
+            $stmt = $con->prepare($sql);
             $stmt->bind_param("sss", $subid, $objid, $relation);
             $stmt->execute();
         }

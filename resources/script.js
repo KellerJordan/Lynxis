@@ -17,25 +17,13 @@ function loadPage(id){
         tbox.html('');
         root = id;
         $.post("resources/reader.php", {type:"tree", id:id}, function(data, status){
-            insertHTML(JSON.parse(data), 3, 3);
+            data = JSON.parse(data);
+            for(var i in data){ appendDiv(data[i]); }
             if(!tbox.children().length){ appendDiv() }
             prevNode = undefined;
             renderMathJax();
             pageLoaded = true;
         });
-    }
-}
-
-function insertHTML(data, r, r0){
-    var first = true;
-    r--;
-    for(i in data){
-        obj = data[i];
-        if(obj.objid != 0){
-            appendDiv(getRelTo(obj,0), obj.objid, "t" + (1 - Math.ceil(r0 / 2) + r), first);
-            first = false;
-            if(r){ insertHTML(obj.synapses, r, r0) }
-        } 
     }
 }
 
