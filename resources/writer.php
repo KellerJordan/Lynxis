@@ -12,11 +12,13 @@ function getNodes(){
         $con->query("CREATE TABLE backup (relid int(10), subid int(10), objid int(10), relation varchar(5000), primarity int(10))");
         $con->query("INSERT INTO backup SELECT * FROM synapses");
         break;
+
         case "new":
         $objid = $con->query("SELECT MAX(GREATEST(subid,objid)) FROM synapses")->fetch_array()[0] + 1;
         $con->query("INSERT INTO synapses (subid,objid,relation) VALUES ('$subid','$objid','contains')");
         return $objid;
         break;
+
         case "rel":
         $relation = $_POST["relation"]; $objid = $_POST["objid"];
         // if name relation exists, update it
@@ -25,7 +27,7 @@ function getNodes(){
             $stmt = $con->prepare($sql);
             $stmt->bind_param("sss", $relation, $subid, $objid);
             $stmt->execute();
-        // if it doesn't, create it
+        // if not, create it
         }else{
             $sql = "INSERT INTO synapses (subid,objid,relation) VALUES (?, ?, ?)";
             $stmt = $con->prepare($sql);
@@ -34,9 +36,11 @@ function getNodes(){
         }
         return $objid;
         break;
+
         case "del":
         if(checkSafety($subid)){ $con->query("DELETE FROM synapses WHERE subid = '$subid' OR objid = '$subid'"); }
         break;
+
         case "delrel":
         if(checkSafety($subid)){ $con->query("DELETE FROM synapses WHERE objid = '$subid'"); }
         break;
