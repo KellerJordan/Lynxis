@@ -5,12 +5,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Lynxis</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<title>Lynxis</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="resources/script.js"></script><link rel="stylesheet" href="resources/style.css">
 	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"></script>
 	<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
@@ -20,27 +20,27 @@
 <body>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/">Lynxis.org</a>
-    </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="/">Home</a></li>
-      <li><a href="/features">Features</a></li>
-      <li><a href="/howto">Instructions</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Other Projects<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="/projects/Vector-Playground">Vector Sandbox</a></li>
-          <li><a href="/projects/Dota2-Drafter">Dota 2 Drafter</a></li>
-        </ul>
-      </li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/contact">Contact</a></li>
-    </ul>
-  </div>
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/">Lynxis.org</a>
+		</div>
+		<ul class="nav navbar-nav">
+			<li class="active"><a href="/">Home</a></li>
+			<li><a href="/features">Features</a></li>
+			<li><a href="/howto">Instructions</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Other Projects<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="/projects/Vector-Playground">Vector Sandbox</a></li>
+					<li><a href="/projects/Dota2-Drafter">Dota 2 Drafter</a></li>
+				</ul>
+			</li>
+			<li><a href="/about">About</a></li>
+			<li><a href="/contact">Contact</a></li>
+	  </ul>
+	</div>
 </nav>
 
 	<div id="options">
@@ -71,14 +71,14 @@ $(document).on("keydown", function(e){
 	if(!editing && !$(document.activeElement.parentElement).is("form")){
 		switch(e.which){
 			case 81: //q
-			loadPage(42);
+			loadPage(oroot);
 			break;
 			case 87: //w
 			loadPage(prompt("Enter page ID: "));
 			break;
 	    }
 	}
-	if([18,46].indexOf(e.which) != -1 || e.ctrlKey && !([65,67,86,89,90].indexOf(e.which) != -1)){ e.preventDefault() }
+	if([18, 46, 38, 40].indexOf(e.which) != -1 || e.ctrlKey && !([65, 67, 86, 89, 90].indexOf(e.which) != -1)){ e.preventDefault() }
 	if(e.ctrlKey && e.which == 80){ printDoc() }
 	switch(e.which){
 		case 83: //s
@@ -88,7 +88,16 @@ $(document).on("keydown", function(e){
 		if(!$(document.activeElement.parentElement).is("form")){
 			e.preventDefault();
 			if('<?php echo $_SESSION["write"]; ?>'){ toggleEditing() }else{ alert("Sorry, you are not logged in with write permissions.") }
+			update(prevNode);
+			renderMathJax();
 		}
+		break;
+			case 13: // enter
+			if(!$(document.activeElement.parentElement).is("form")){
+				e.preventDefault();
+				appendNode();
+			}
+			break;
 	}
 });
 

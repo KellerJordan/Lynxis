@@ -3,7 +3,7 @@
     unset($_SESSION['timeout']);
     // unset($_SESSION['username']);
     // unset($_SESSION['password']);
-    $_SESSION['write'] = FALSE;
+    $_SESSION['write'] = TRUE;
     $_SESSION['username'] = 'guest';
     $_SESSION['password'] = '1234';
 ?>
