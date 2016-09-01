@@ -13,7 +13,10 @@ function parse_heading($id){
 	while(1){
 		array_push($data, recurseNodes($id, $depth, 42));
 		if(end($data) ["length"] > $pageSize || ($depth > 0 && (end($data)["length"] == $data[$depth - 1]["length"]))){
+			$len = countNodeChildren($id, $depth);
+			// return "'$id', '$depth', '$len'";
 			return recurseNodes($id, $depth, countNodeChildren($id, $depth))["headings"];
+			// return recurseNodes($id, 3, 10);
 		}
 		$depth++;
 	}
@@ -31,9 +34,9 @@ function recurseNodes($subid, $depth, $countChildren){
 			$lineHeight = 15/11;
 
 			if($depth == 0){ $fontSize = $lineHeight * 200/$countChildren; }
-			if($fontSize < 840){
-				break;
-			}
+			if($fontSize < 8){ break; }
+
+			if($depth == 0){ break; }
 
 			$class = 't'.(floor($depth) - 1);
 			if(getRel($id, 10) == -1){ $fontSize = 8; }
@@ -71,11 +74,14 @@ function countNodeChildren($subid, $depth){
 
 // NETWORK PARSE
 
-function parse_network(){
+function parse_network($relation){
 	global $con;
 	$result=array();
+	$i = 0;
 	foreach($con -> query("SELECT subid, objid, relation FROM synapses WHERE NOT objid = 0") as $row){
-		if($row['relation'] == 'contains'){ array_push($result, ['source' => getRel($row['subid'], 0), 'target' => getRel($row['objid'], 0), 'type' => 'suit']); }
+		if($row['relation'] == $relation){ array_push($result, ['source' => getRel($row['subid'], 0), 'target' => getRel($row['objid'], 0), 'type' => $relation]); }
+		$i++;
+		if($i > 100){ return $result; }
 	}
 	return $result;
 }
@@ -93,7 +99,7 @@ function getRel($subid, $objid){
 session_start();
 $con = new mysqli('localhost', $_SESSION['username'], $_SESSION['password'], 'synapseDB');
 if($_POST['type'] == 'tree'){ echo json_encode(parse_heading($_POST['id'])); }
-if($_POST['type'] == 'network'){ echo json_encode(parse_network()); }
+if($_POST['type'] == 'network'){ echo json_encode(parse_network('contains')); }
 mysqli_close($con);
 
 ?>
