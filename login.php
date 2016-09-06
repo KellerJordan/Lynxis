@@ -27,7 +27,7 @@
         echo 'Success logging out.';
     }
     echo '<br>Redirecting...';
-    header('Refresh: 1.5; URL = /');
+    header('Refresh: .5; URL = /');
     $newacc = FALSE;
 ?>
 <form id="createacc" hidden="true">
