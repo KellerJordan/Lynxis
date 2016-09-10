@@ -2,15 +2,15 @@
 
 function checkSafety($id) { if((!$id) || $id == "" || $id == "0" || !(is_numeric($id))) { return FALSE; } else { return TRUE; }}
 
-function getNodes() {
+function doStuff() {
 	global $con;
 	global $_POST;
 	$subid = $_POST["subid"];
 	switch($_POST["type"]) {
 		case "backup":
-			// $con -> query("DROP TABLE backup");
-			// $con -> query("CREATE TABLE backup (relid int(10), subid int(10), objid int(10), relation varchar(5000), primarity int(10))");
-			// $con -> query("INSERT INTO backup SELECT * FROM synapses");
+			$con -> query("DROP TABLE backup");
+			$con -> query("CREATE TABLE backup (relid int(10), subid int(10), objid int(10), relation varchar(5000), primarity int(10))");
+			$con -> query("INSERT INTO backup SELECT * FROM synapses");
 		break;
 
 		case "new":
@@ -49,7 +49,7 @@ function getNodes() {
 
 session_start();
 $con = new mysqli("localhost", $_SESSION['username'], $_SESSION['password'], "synapseDB");
-echo json_encode(getNodes());
+echo json_encode(doStuff());
 mysqli_close($con);
 
 ?>
