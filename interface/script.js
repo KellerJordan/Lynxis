@@ -294,8 +294,8 @@ function render_bubble(root){
 	var text = div.selectAll("div")
 			.data(nodes)
 		.enter().append("div")
-			.attr("class", "label")
 			.append("p")
+			.attr("class", "label")
 			.style("opacity", d => d.parent === root ? 1 : 0)
 			.style("display", d => d.parent === root ? "inline" : "none")
 			.text(d => d.name);
