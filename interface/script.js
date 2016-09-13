@@ -295,6 +295,7 @@ function render_bubble(root){
 			.data(nodes)
 		.enter().append("div")
 			.attr("class", "label")
+			.append("p")
 			.style("opacity", d => d.parent === root ? 1 : 0)
 			.style("display", d => d.parent === root ? "inline" : "none")
 			.text(d => d.name);
@@ -318,8 +319,8 @@ function render_bubble(root){
 
 	function zoomTo(v) {
 		var k = diameter / v[2]; view = v;
-		text.style("transform", d => "translate(" + (d.x - v[0]) * k + "px, " + (d.y - v[1]) * k + "px)");
-		circle.attr("transform", d => "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")");
-		circle.attr("r", d => d.r * k);
+		div.selectAll("div").style("transform", d => "translate(" + (d.x - v[0]) * k + "px, " + (d.y - v[1]) * k + "px)");
+		circle.attr("transform", d => "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")")
+			.attr("r", d => d.r * k);
 	}
 }
