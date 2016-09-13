@@ -15,14 +15,9 @@ function render(i){
 	if(i == 2) $("#container_bubble").attr("hidden", false);
 }
 
-var rendered = [false, false, false];
-
 var renderIndex = 0;
 
-function validate(i){
-	rendered[i] = true;
-	if(rendered[0] && rendered[1] && rendered[2]){
-
+function validate(){
 		MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 		render(renderIndex);
 
@@ -33,23 +28,30 @@ function validate(i){
 			}
 			render(renderIndex);
 		});
-
-	}
 }
 
 $.post("reader.php", {type: "tree", id: 100}, (data, status) => {
 	render_heading(myParse(data));
-	validate(0);
-});
 
-$.post("reader.php", {type: "network"}, (data, status) => {
-	render_network(myParse(data));
-	validate(1);
-});
+	$.post("reader.php", {type: "network"}, (data, status) => {
+		render_network(myParse(data));
 
-$.post("reader.php", {type: "bubble", id: 100}, (data, status) => {
-	render_bubble(myParse(data));
-	validate(2);
+		$.post("reader.php", {type: "bubble", id: 100}, (data, status) => {
+			render_bubble(myParse(data));
+
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+			$(document).on("keydown", e => {
+				if(e.which == 9){
+					e.preventDefault();
+					renderIndex == 2 ? renderIndex = 0 : renderIndex++;
+				}
+				render(renderIndex);
+			});
+
+			render(0);
+		});
+	});
 });
 
 
@@ -171,6 +173,8 @@ function render_heading(data){
 
 	ReactDOM.render(<App node={data} />, document.getElementById("container"));
 
+	console.log("Heading display rendered");
+
 }
 
 
@@ -243,6 +247,9 @@ function render_network(links){
 		circle.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
 		text.style("transform", d => "translate(" + d.x + "px, " + d.y + "px)");
 	}
+
+	console.log("Network display rendered");
+
 }
 
 
@@ -323,4 +330,7 @@ function render_bubble(root){
 		circle.attr("transform", d => "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")")
 			.attr("r", d => d.r * k);
 	}
+
+	console.log("Bubble display rendered");
+
 }
