@@ -1,0 +1,16 @@
+textarea, .TextNode {
+	font-family: "Times New Roman";
+	font-size: 14px;
+	display: block;
+	padding: 0;
+}
+
+textarea {
+	width: 92.5%;
+	position: absolute;
+	vertical-align: middle;
+	resize: none;
+	border: none;
+	outline: none;
+	background-color: rgba(0, 0, 0, 0);
+}
