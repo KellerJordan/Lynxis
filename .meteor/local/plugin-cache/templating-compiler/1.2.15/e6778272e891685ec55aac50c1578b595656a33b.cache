@@ -1,1 +1,0 @@
-{"head":"","body":"","js":"\nTemplate.body.addContent((function() {\n  var view = this;\n  return HTML.Raw('<h4>Lynxis</h4>\\n\\t<div id=\"render-target\">\\n\\t</div>');\n}));\nMeteor.startup(Template.body.renderToDocument);\n","bodyAttrs":{}}
