@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { Nodes } from '/imports/api/nodes/nodes.js';
+import { Nodes, Links } from '/imports/api/nodes/nodes.js';
 
-Meteor.publish('nodes.all', function () {
-	return Nodes.find({});
-});
+Meteor.publish('nodes.all', () => { return Nodes.find(); });
+Meteor.publish('links.all', () => { return Links.find() })

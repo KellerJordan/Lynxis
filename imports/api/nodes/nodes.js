@@ -8,8 +8,8 @@ CountersDB = new Mongo.Collection('counters');
 
 NodeDB.schema = new SimpleSchema({});
 LinkDB.schema = new SimpleSchema({
-	subject: { type: Number },
-	object: { type: Number },
+	subject: { type: String },
+	object: { type: String },
 	text: { type: String },
 });
 

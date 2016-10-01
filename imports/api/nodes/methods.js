@@ -8,17 +8,19 @@ export const insertNode = new ValidatedMethod({
 	name: 'Nodes.insert',
 	validate: Nodes.schema.validator(),
 
-	run({}) {
-		Nodes.insert({ date: Date.parse(new Date()) });
-	}
+	run({}) { return Nodes.insert({ date: Date.parse(new Date()) }) }
 });
 
-export const insertLink = new ValidatedMethod({
+export const updateLink = new ValidatedMethod({
 	name: 'Links.insert',
 	validate: Links.schema.validator(),
 
-	run({ subid, objid, text }) {
-		Links.insert({
+	run({ subject, object, text }) {
+		Links.upsert({
+			subject,
+			object
+		},
+		{
 			subject,
 			object,
 			text,
@@ -26,6 +28,22 @@ export const insertLink = new ValidatedMethod({
 		});
 	}
 });
+
+export const getLink = new ValidatedMethod({
+	name: 'Links.get',
+	validate: new SimpleSchema({
+		subject: { type: String },
+		object: { type: String }
+	}).validator(),
+
+	run({ subject, object }) {
+		var link = Links.findOne({
+			subject,
+			object
+		});
+		return link ? link.text : '_';
+	}
+})
 
 export const updateNode = new ValidatedMethod({
 	name: 'Nodes.update',
