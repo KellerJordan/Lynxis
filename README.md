@@ -1,6 +1,8 @@
 # Lynxis
 Lynxis is a text editing interface intended to be used for note-taking, especially in mathematics courses. Rather than storing notes as a linear file, user input is stored as network of relationships between informational nodes.
 
+Technologies: Meteor(MongoDB, NodeJS, ...), ReactJS, Materialize, KaTeX
+
 Check out the project at [lynxis.org](http://lynxis.org/)!
 
 ## Screenshots:
