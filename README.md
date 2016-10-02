@@ -3,7 +3,7 @@ Lynxis is a text editing interface intended to be used for note-taking, especial
 
 Technologies: Meteor(MongoDB, NodeJS, ...), ReactJS, Materialize, KaTeX
 
-Check out the project at [lynxis.org](http://lynxis.org/)!
+Check out the project (pre-meteor) at [lynxis.org](http://lynxis.org/)!
 
 ## Screenshots:
 ### Heading Form:
