@@ -6,12 +6,12 @@ import { Nodes, Links } from './nodes.js';
 
 export const insertNode = new ValidatedMethod({
 	name: 'Nodes.insert',
-	validate: Nodes.schema.validator(),
+	validate: new SimpleSchema({}).validator(),
 
 	run({}) { return Nodes.insert({ date: Date.parse(new Date()) }) }
 });
 
-export const updateLink = new ValidatedMethod({
+export const upsertLink = new ValidatedMethod({
 	name: 'Links.insert',
 	validate: Links.schema.validator(),
 
@@ -29,35 +29,26 @@ export const updateLink = new ValidatedMethod({
 	}
 });
 
-export const getLink = new ValidatedMethod({
-	name: 'Links.get',
-	validate: new SimpleSchema({
-		subject: { type: String },
-		object: { type: String }
-	}).validator(),
+// export const clean = function() {
+// 	for(node in Links.find()) {
+// 		if(!(Links.find({ subject: node._id }) || Links.find({ object: node._id }))) {
+// 			Nodes.remove()
+// 		}
+// 	}
+// }
 
-	run({ subject, object }) {
-		var link = Links.findOne({
-			subject,
-			object
-		});
-		return link ? link.text : '_';
-	}
-})
+// export const getLink = new ValidatedMethod({
+// 	name: 'Links.get',
+// 	validate: new SimpleSchema({
+// 		subject: { type: String },
+// 		object: { type: String }
+// 	}).validator(),
 
-export const updateNode = new ValidatedMethod({
-	name: 'Nodes.update',
-	validate: new SimpleSchema({
-		_id: { type: String },
-		date: { type: String }
-	}).validator(),
-
-	run({ _id, date }) {
-		Nodes.update(
-			{ _id: _id },
-			{
-				$set: { date }
-			}
-		);
-	}
-});
+// 	run({ subject, object }) {
+// 		var link = Links.findOne({
+// 			subject,
+// 			object
+// 		});
+// 		return link ? link.text : '_';
+// 	}
+// });

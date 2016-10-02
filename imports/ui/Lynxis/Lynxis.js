@@ -1,25 +1,47 @@
 import { Meteor } from 'meteor/meteor';
 import { Nodes, Links } from '/imports/api/nodes/nodes.js';
-import { insertNode, updateLink, updateNode, getLink } from '/imports/api/nodes/methods.js';
+import { insertNode, upsertLink } from '/imports/api/nodes/methods.js';
 import './Lynxis.html';
 
 import React from 'react';
 import { render } from 'react-dom';
 
-var name_id = 'qSmGHPege83uyw2Ss';
-var focal_id = 'RTsTCFBnoHjDNn7Y4';
+let name_id, focal_id;
+
+// nodes which are never objects should be linked to base focus
 
 Meteor.startup(() => {
 	Meteor.autorun(() => {
 
 		Meteor.subscribe('nodes.all');
 		Meteor.subscribe('links.all');
-		render(<App nodes={Nodes.find()} />, document.getElementById('render-target'));
+
+		name_id = 'qSmGHPege83uyw2Ss';
+		// focal_id = 'RTsTCFBnoHjDNn7Y4';
+
+		render(<App nodes={getNodes({ subject: focal_id, text: 'contains' })} />, document.getElementById('render-target'));
 
 		$('#addNode').off('click').on('click', () => { insertNode.call() });
-		
 	});
 });
+
+// move this function to the server
+function getLink({ subject, object }) {
+	let link = Links.findOne({ subject, object });
+	return link ? link.text : '_';
+}
+	
+function getNodes({ subject, text }) {
+	let nodes = [];
+	Nodes.find().forEach(node => {
+		// focus exists and node is linked, or focus does not exist and node is unlinked
+		if((subject && Links.findOne({ subject, object: node._id, text })) || (!subject && !Links.findOne({ object: node._id, text }))) {
+			nodes.push(node);
+		}
+	});
+	return nodes;
+}
+
 
 const App = React.createClass({
 	render() {
@@ -27,10 +49,10 @@ const App = React.createClass({
 			<div id="container">
 				<ul className="collection">
 					{this.props.nodes.map(node => {
-						var id = node._id;
+						let id = node._id;
 						return (
 							<li key={id} className="collection-item">
-								<TextNode id={id} text={getLink.call({ subject: id, object: 'qSmGHPege83uyw2Ss' })} />
+								<TextNode id={id} text={getLink({ subject: id, object: 'qSmGHPege83uyw2Ss' })} />
 							</li>
 						);
 					})}
@@ -56,26 +78,27 @@ const TextNode = React.createClass({
 	componentWillReceiveProps: function(nextProps) { this.setState({ hovered: nextProps.hovered })},
 
 	handleChange(event) {
-		const text = event.target.value;
+		let text = event.target.value;
 		this.setState({ text });
-		updateLink.call({
+		upsertLink.call({
 			subject: this.props.id,
 			object: name_id,
 			text: text
 		});
+		Katex.render(document.selectElementById)
 	},
 
 	handleHover(hover) { this.setState({ hovered: hover }) },
 
 	handleFocus(focus) {
 		this.setState({ focused: focus });
-		// if(!focus) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 	},
 
 	render() {
-		const text = this.state.text,
+		let text = this.state.text,
 			divVisible = this.state.hovered || this.state.focused ? "hidden" : "visible",
-			textareaVisible = (divVisible == "visible") ? "hidden" : "visible";
+			textareaVisible = (divVisible == "visible") ? "hidden" : "visible",
+			html = katex.renderToString(text);
 		return (
 			<div onMouseEnter={this.handleHover.bind(this, true)} onMouseLeave={this.handleHover.bind(this, false)} >
 				<textarea
@@ -90,13 +113,10 @@ const TextNode = React.createClass({
 					}}
 				/>
 				<div
-					style={{
-						visibility: divVisible,
-					}}
-					className="TextNode"
-				>
-					{text}
-				</div>
+				style={{visibility: divVisible}}
+				className="TextNode"
+				dangerouslySetInnerHTML={{__html: html}}
+				/>
 			</div>
 		);
 	}
