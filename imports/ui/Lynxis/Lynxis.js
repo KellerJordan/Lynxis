@@ -1,47 +1,29 @@
 import { Meteor } from 'meteor/meteor';
 import { Nodes, Links } from '/imports/api/nodes/nodes.js';
-import { insertNode, upsertLink } from '/imports/api/nodes/methods.js';
+import { insertNode, upsertLink, getNodes, name_id } from '/imports/api/nodes/methods.js';
 import './Lynxis.html';
 
 import React from 'react';
 import { render } from 'react-dom';
 
-let name_id, focal_id;
+let focus, nodes;
 
-// nodes which are never objects should be linked to base focus
+Meteor.autorun(() => {
 
-Meteor.startup(() => {
-	Meteor.autorun(() => {
+	Meteor.subscribe('nodes.all');
+	Meteor.subscribe('links.all');
 
-		Meteor.subscribe('nodes.all');
-		Meteor.subscribe('links.all');
+	// focus = 'RTsTCFBnoHjDNn7Y4';
+	focus = '';
 
-		name_id = 'qSmGHPege83uyw2Ss';
-		// focal_id = 'RTsTCFBnoHjDNn7Y4';
-
-		render(<App nodes={getNodes({ subject: focal_id, text: 'contains' })} />, document.getElementById('render-target'));
-
-		$('#addNode').off('click').on('click', () => { insertNode.call() });
+	Meteor.call('getNodes', { focus, text: 'contains' }, (error, nodes) => {
+		render(<App nodes={nodes} />, document.getElementById('render-target'));
 	});
+
+	$('#addNode').off('click').on('click', () => { Meteor.call('insertNode', {}, (error, id) => {
+		if(focus && !error) Meteor.call('upsertLink', { subject: focus, object: id, text: 'contains' });
+	})});
 });
-
-// move this function to the server
-function getLink({ subject, object }) {
-	let link = Links.findOne({ subject, object });
-	return link ? link.text : '_';
-}
-	
-function getNodes({ subject, text }) {
-	let nodes = [];
-	Nodes.find().forEach(node => {
-		// focus exists and node is linked, or focus does not exist and node is unlinked
-		if((subject && Links.findOne({ subject, object: node._id, text })) || (!subject && !Links.findOne({ object: node._id, text }))) {
-			nodes.push(node);
-		}
-	});
-	return nodes;
-}
-
 
 const App = React.createClass({
 	render() {
@@ -52,7 +34,7 @@ const App = React.createClass({
 						let id = node._id;
 						return (
 							<li key={id} className="collection-item">
-								<TextNode id={id} text={getLink({ subject: id, object: 'qSmGHPege83uyw2Ss' })} />
+								<TextNode id={id} text={node.name} />
 							</li>
 						);
 					})}
@@ -80,12 +62,7 @@ const TextNode = React.createClass({
 	handleChange(event) {
 		let text = event.target.value;
 		this.setState({ text });
-		upsertLink.call({
-			subject: this.props.id,
-			object: name_id,
-			text: text
-		});
-		Katex.render(document.selectElementById)
+		upsertLink.call({ subject: this.props.id, object: name_id, text });
 	},
 
 	handleHover(hover) { this.setState({ hovered: hover }) },
@@ -98,7 +75,12 @@ const TextNode = React.createClass({
 		let text = this.state.text,
 			divVisible = this.state.hovered || this.state.focused ? "hidden" : "visible",
 			textareaVisible = (divVisible == "visible") ? "hidden" : "visible",
+			html;
+		try {
 			html = katex.renderToString(text);
+		} catch(err) {
+			if(err) html = text;
+		}
 		return (
 			<div onMouseEnter={this.handleHover.bind(this, true)} onMouseLeave={this.handleHover.bind(this, false)} >
 				<textarea
