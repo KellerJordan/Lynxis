@@ -1,22 +1,33 @@
-textarea, .TextNode {
-	font-family: "Times New Roman";
-	font-size: 14px;
-	display: block;
-	padding: 0;
+html {
+	/*font-family: sans-serif;*/
+	/*font-family: Arial;*/
 }
 
-textarea {
-	/*width: 92.5%;*/
-	width: 100%;
-	position: absolute;
-	vertical-align: middle;
+.TextNode {
+	font-family: "Times New Roman";
+	/*font-size: 14.67px;
+	line-height: 20px;
+	height: 20px;*/
+	font-size: 20px;
+	line-height: 30px;
+	height: 30px;
+}
+
+.TextNode > textarea {
+	padding: 0;
+	height: inherit;
 	resize: none;
 	border: none;
 	outline: none;
 	background-color: rgba(0, 0, 0, 0);
-	/*background-color: red;*/
 }
 
-.center-align textarea {
+.focus > *{
+	height: 100px !important;
+	font-size: 50px !important;
+	line-height: 100px !important;
 	text-align-last: center;
 }
+
+/*.TextNode > textarea{ background-color: red; }
+.TextNode > div { background-color: blue; }*/
