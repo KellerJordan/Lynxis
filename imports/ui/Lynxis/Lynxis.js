@@ -13,11 +13,11 @@ Meteor.autorun(() => {
 	Meteor.subscribe('nodes.all');
 	Meteor.subscribe('links.all');
 
-	// focus = 'RTsTCFBnoHjDNn7Y4';
-	focus = '';
+	focus = 'RTsTCFBnoHjDNn7Y4';
+	// focus = '';
 
-	Meteor.call('getNodes', { focus, text: 'contains' }, (error, nodes) => {
-		render(<App nodes={nodes} />, document.getElementById('render-target'));
+	Meteor.call('getNodes', { focus, text: 'contains' }, (error, result) => {
+		render(<App focus={result.focus} nodes={result.nodes} />, document.getElementById('render-target'));
 	});
 
 	$('#addNode').off('click').on('click', () => { Meteor.call('insertNode', {}, (error, id) => {
@@ -27,10 +27,14 @@ Meteor.autorun(() => {
 
 const App = React.createClass({
 	render() {
+		let focus = this.props.focus, nodes = this.props.nodes;
 		return (
 			<div id="container">
+				<div className="row center-align" style={{ paddingTop: '20px' }}>
+					<TextNode id={focus._id} text={focus.name} />
+				</div>
 				<ul className="collection">
-					{this.props.nodes.map(node => {
+					{nodes.map(node => {
 						let id = node._id;
 						return (
 							<li key={id} className="collection-item">
@@ -88,10 +92,12 @@ const TextNode = React.createClass({
 					onChange={this.handleChange}
 					onBlur={this.handleFocus.bind(this, false)}
 					value={text}
-					rows={1}
 					style={{
 						visibility: textareaVisible,
-						zIndex: 1000
+						zIndex: 1000,
+						fontSize: '14.67px',
+						lineHeight: '20px',
+						height: '20px'
 					}}
 				/>
 				<div

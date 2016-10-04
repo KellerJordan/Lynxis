@@ -41,14 +41,17 @@ export const getNodes = new ValidatedMethod({
 	run({ focus, text }) {
 		let nodes = [];
 		Nodes.find().forEach(val => {
+			let node = val, id = node._id;
 			// focus exists and node is linked, or focus does not exist and node is unlinked
-			let node = val;
-			if((focus && Links.findOne({ focus, object: node._id, text })) || (!focus && !Links.findOne({ object: node._id, text }))) {
-				node.name = getLink({ subject: node._id, object: name_id });
+			if((focus && Links.findOne({ subject: focus, object: id, text })) || (!focus && !Links.findOne({ object: id, text }))) {
+				node.name = getLink({ subject: id, object: name_id });
 				nodes.push(node);
 			}
 		});
-		return nodes;
+		return {
+			focus: { _id: focus, name: getLink({ subject: focus, object:name_id }) },
+			nodes
+		};
 	}
 })
 

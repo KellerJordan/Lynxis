@@ -6,11 +6,17 @@ textarea, .TextNode {
 }
 
 textarea {
-	width: 92.5%;
+	/*width: 92.5%;*/
+	width: 100%;
 	position: absolute;
 	vertical-align: middle;
 	resize: none;
 	border: none;
 	outline: none;
 	background-color: rgba(0, 0, 0, 0);
+	/*background-color: red;*/
+}
+
+.center-align textarea {
+	text-align-last: center;
 }
