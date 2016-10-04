@@ -1,5 +1,5 @@
 # Lynxis
-Lynxis is an interface intended to be used for note-taking, especially in mathematics courses. Rather than storing notes as a linear file, user input is stored as network of relationships between informational nodes.
+Interface intended to be used for note-taking, especially in mathematics courses. Rather than storing notes as a linear file, user input is stored as network of node relationships.
 
 Technologies: Meteor(MongoDB, NodeJS, ...), ReactJS, Materialize, KaTeX
 
