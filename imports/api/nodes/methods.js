@@ -34,22 +34,22 @@ export const upsertLink = new ValidatedMethod({
 export const getNodes = new ValidatedMethod({
 	name: 'getNodes',
 	validate: new SimpleSchema({
-		focus: { type: String },
+		root: { type: String },
 		text: { type: String }
 	}).validator(),
 
-	run({ focus, text }) {
+	run({ root, text }) {
 		let nodes = [];
 		Nodes.find().forEach(val => {
 			let node = val, id = node._id;
-			// focus exists and node is linked, or focus does not exist and node is unlinked
-			if((focus && Links.findOne({ subject: focus, object: id, text })) || (!focus && !Links.findOne({ object: id, text }))) {
+			// root exists and node is linked, or root does not exist and node is unlinked
+			if((root && Links.findOne({ subject: root, object: id, text })) || (!root && !Links.findOne({ object: id, text }))) {
 				node.name = getLink({ subject: id, object: name_id });
 				nodes.push(node);
 			}
 		});
 		return {
-			focus: { _id: focus, name: getLink({ subject: focus, object:name_id }) },
+			root: { _id: root, name: getLink({ subject: root, object:name_id }) },
 			nodes
 		};
 	}
@@ -57,8 +57,21 @@ export const getNodes = new ValidatedMethod({
 
 function getLink({ subject, object }) {
 	let link = Links.findOne({ subject, object });
-	return link ? link.text : '_';
+	return link ? link.text : '';
 }
+
+export const deleteNode = new ValidatedMethod({
+	name: 'deleteNode',
+	validate: new SimpleSchema({
+		id: { type: String }
+	}).validator(),
+
+	run({ id }) {
+		Nodes.remove({ _id: id });
+		Links.remove({ subject: id });
+		Links.remove({ object: id });
+	}
+})
 
 // export const clean = function() {
 // 	for(node in Links.find()) {

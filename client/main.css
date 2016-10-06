@@ -13,6 +13,10 @@ html {
 	height: 30px;
 }
 
+.TextNode > * {
+	border: 0;
+}
+
 .TextNode > textarea {
 	padding: 0;
 	height: inherit;
@@ -22,11 +26,15 @@ html {
 	background-color: rgba(0, 0, 0, 0);
 }
 
-.focus > *{
+.root > * {
 	height: 100px !important;
 	font-size: 50px !important;
 	line-height: 100px !important;
 	text-align-last: center;
+}
+
+.focus {
+	border-bottom: 3px solid #42a5f5;
 }
 
 /*.TextNode > textarea{ background-color: red; }
