@@ -1,3 +1,4 @@
+// /imports/ui/Lynxis.js
 import { Meteor } from 'meteor/meteor';
 import { Nodes, Links } from '/imports/api/nodes/nodes.js';
 import { insertNode, upsertLink, getNodes, deleteNode, name_id } from '/imports/api/nodes/methods.js';
@@ -12,8 +13,8 @@ $(document).ready(() => { $('.modal-trigger').leanModal() });
 Meteor.startup(() => { render(<App root="" />, document.getElementById('render-target')) });
 
 Meteor.autorun(() => {
-	Meteor.subscribe('nodes.all');
-	Meteor.subscribe('links.all');
+	Meteor.subscribe('nodes');
+	Meteor.subscribe('links');
 });
 
 const App = React.createClass({
@@ -21,16 +22,14 @@ const App = React.createClass({
 		let id = this.props.root;
 		return {
 			id,
-			root: {},
-			nodes: [],
 			focus: id,
 			mode: 'view',
 			loading: true
-		}
+		};
 	},
 
 	getData(id) {
-		this.setState({ loading: true })
+		this.setState({ loading: true });
 		Meteor.call(
 			'getNodes',
 			{ root: id, text: 'contains' },
@@ -43,7 +42,7 @@ const App = React.createClass({
 	componentWillMount() {
 		this.getData(this.state.id);
 
-		$(document).on('keydown', (e) => {
+		$(document).on('keydown', e => {
 			if(this.state.mode == 'view') {
 				switch(e.which) {
 					case 81: // q
@@ -83,9 +82,7 @@ const App = React.createClass({
 								Meteor.call(
 									'upsertLink',
 									{ subject: this.state.id, object: id, text: 'contains' },
-									() => {
-										this.getData(this.state.id);
-									}
+									() => { this.getData(this.state.id) }
 								);
 							} else {
 								this.getData(this.state.id);
@@ -106,6 +103,17 @@ const App = React.createClass({
 
 	handleMouseDown(focus) { if(this.state.mode == 'view') this.setState({ focus }) },
 
+	TextNode(node) {
+		return (
+			<TextNode
+				id={node._id}
+				text={node.name}
+				mode={this.state.mode}
+				className={`TextNode ${(this.state.focus == node._id && this.state.mode == 'view') ? 'focus' : ''}`}
+			/>
+		);
+	},
+
 	render() {
 		if(this.state.loading) return <div>Loading...</div>;
 
@@ -113,12 +121,7 @@ const App = React.createClass({
 			<div className="container">
 				<div className="row" style={{ paddingTop: '20px' }}>
 					<div className="col s12 root" onMouseDown={this.handleMouseDown.bind(this, this.state.id)}>
-						<TextNode
-							id={this.state.root._id}
-							text={this.state.root.name}
-							mode={this.state.mode}
-							className={`TextNode ${(this.state.focus == this.state.root._id && this.state.mode == 'view') ? 'focus' : ''}`}
-						/>
+						{this.TextNode(this.state.root)}
 					</div>
 				</div>
 				<div className="row">
@@ -126,21 +129,11 @@ const App = React.createClass({
 						{this.state.nodes.map(node => {
 							return (
 								<li key={node._id} className="collection-item" onMouseDown={this.handleMouseDown.bind(this, node._id)}>
-									<TextNode
-										id={node._id}
-										text={node.name}
-										mode={this.state.mode}
-										className={`TextNode ${(this.state.focus == node._id && this.state.mode == 'view') ? 'focus' : ''}`}
-									/>
+									{this.TextNode(node)}
 								</li>
 							);
 						})}
 					</ul>
-				</div>
-				<div className="row">
-					<div className="description">
-						abc
-					</div>
 				</div>
 				<div className="row">
 					<div>
@@ -155,8 +148,8 @@ const App = React.createClass({
 const TextNode = React.createClass({
 	getInitialState() { return { text: this.props.text } },
 
-	handleChange(e) {
-		let text = e.target.value;
+	handleChange(event) {
+		let text = event.target.value;
 		this.setState({ text });
 		upsertLink.call({ subject: this.props.id, object: name_id, text });
 	},
@@ -166,9 +159,14 @@ const TextNode = React.createClass({
 
 		try {
 			if(text.substring(0, 2) == '$$') html = katex.renderToString(text.substring(2));
-			else html = text;
+			else throw(1);
 		} catch(err) {
-			html = text;
+			html = text
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/"/g, "&quot;")
+				.replace(/'/g, "&#039;");
 		}
 
 		if(this.props.mode == 'edit') TextNode = <textarea onChange={this.handleChange} value={text} />;
