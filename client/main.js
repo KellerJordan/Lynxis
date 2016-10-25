@@ -1,1 +1,1 @@
-import '/imports/ui/Lynxis.js';
+import '/imports/startup/client/index.js';

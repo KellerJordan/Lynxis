@@ -1,23 +1,14 @@
-// /imports/ui/Lynxis.js
+// /imports/ui/pages/Display.js
 import { Meteor } from 'meteor/meteor';
-import { Nodes, Links } from '/imports/api/nodes/nodes.js';
-import { insertNode, upsertLink, getNodes, deleteNode, name_id } from '/imports/api/nodes/methods.js';
-import './Lynxis.html';
-
+import { Nodes } from '/imports/api/nodes/nodes.js';
+import { Links } from '/imports/api/links/links.js';
+import { insertNode, getRelatedNodes, deleteNode } from '/imports/api/methods.js';
 import React from 'react';
-import { render } from 'react-dom';
+
+import { TextNode } from '/imports/ui/components/TextNode.js';
 
 
-$(document).ready(() => { $('.modal-trigger').leanModal() });
-
-Meteor.startup(() => { render(<App root="" />, document.getElementById('render-target')) });
-
-Meteor.autorun(() => {
-	Meteor.subscribe('nodes');
-	Meteor.subscribe('links');
-});
-
-const App = React.createClass({
+export const Display = React.createClass({
 	getInitialState() {
 		let id = this.props.root;
 		return {
@@ -31,7 +22,7 @@ const App = React.createClass({
 	getData(id) {
 		this.setState({ loading: true });
 		Meteor.call(
-			'getNodes',
+			'getRelatedNodes',
 			{ root: id, text: 'contains' },
 			(error, result) => {
 				this.setState({ id, root: result.root, nodes: result.nodes, loading: false })
@@ -140,41 +131,6 @@ const App = React.createClass({
 						{`Mode: ${this.state.mode == 'view' ? 'traversal' : 'manipulation'}`}
 					</div>
 				</div>
-			</div>
-		);
-	}
-});
-
-const TextNode = React.createClass({
-	getInitialState() { return { text: this.props.text } },
-
-	handleChange(event) {
-		let text = event.target.value;
-		this.setState({ text });
-		upsertLink.call({ subject: this.props.id, object: name_id, text });
-	},
-
-	render() {
-		let text = this.state.text, html, TextNode;
-
-		try {
-			if(text.substring(0, 2) == '$$') html = katex.renderToString(text.substring(2));
-			else throw(1);
-		} catch(err) {
-			html = text
-				.replace(/&/g, "&amp;")
-				.replace(/</g, "&lt;")
-				.replace(/>/g, "&gt;")
-				.replace(/"/g, "&quot;")
-				.replace(/'/g, "&#039;");
-		}
-
-		if(this.props.mode == 'edit') TextNode = <textarea onChange={this.handleChange} value={text} />;
-		else TextNode = <div dangerouslySetInnerHTML={{__html: html}} />;
-
-		return (
-			<div className={this.props.className} >
-				{TextNode}
 			</div>
 		);
 	}
