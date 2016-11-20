@@ -1,64 +1,144 @@
 import { Meteor } from 'meteor/meteor';
+import { Nodes } from '/imports/api/nodes/nodes.js';
+import { insertNode, getRelatedNodes, deleteNode } from '/imports/api/nodes/methods.js';
 import React from 'react';
 
-// Meteor.autorun(() => {
-// 	Meteor.subscribe('nodes');
-// 	Meteor.subscribe('links');
-// });
+import '/imports/ui/components/TextNode.js';
 
-// export default const indexPage = React.createClass({
-// 	getInitialState() {
-// 		return { myPage: <div>abc</div> }
-// 	},
-
-// 	render() {
-// 		return (
-// 			<div>
-// 				<nav>
-// 					<div class="nav-wrapper">
-// 						<a href="#" class="brand-logo">Lynxis</a>
-// 						<ul id="nav-mobile" class="right hide-on-med-and-down">
-// 							<li><a class="modal-trigger" href="#modal-instructions">Instructions</a></li>
-// 						</ul>
-// 					</div>
-// 				</nav>
-
-// 				{this.state.myPage}
-
-// 				<div id="modal-instructions" class="modal">
-// 					<div class="modal-content">
-// 						<h4>Instructions</h4>
-// 						<h5>Keybinds</h5>
-// 						<p>
-// 							<ul class="collection">
-// 								<li class="collection-item row"><div class="col s1">Tab:</div>Switch between traversal and manipulation mode.</li>
-// 								<li class="collection-item row"><div class="col s1">Q:</div>Render the root node.</li>
-// 								<li class="collection-item row"><div class="col s1">W:</div>Render parent of focus.</li>
-// 								<li class="collection-item row"><div class="col s1">E:</div></li>
-// 								<li class="collection-item row"><div class="col s1">R:</div>Render selected node.</li>
-// 								<li class="collection-item row"><div class="col s1">A:</div></li>
-// 								<li class="collection-item row"><div class="col s1">S:</div></li>
-// 								<li class="collection-item row"><div class="col s1">D + Ctrl:</div>Delete selected node.</li>
-// 								<li class="collection-item row"><div class="col s1">F:</div>Insert new node with relation 'contains' to focus.</li>
-// 							</ul>
-// 						</p>
-// 						<h5>Parsing</h5>
-// 						<p>
-// 							Indicate TeX by starting line with two dollar signs ('$$').
-// 						</p>
-// 					</div>
-// 				</div>
-// 			</div>
-// 		);
-// 	},
-
-// 	componentDidMount() {
-// 		$('.modal-trigger').leanModal();
-// 	}
-// });
 
 export const IndexPage = React.createClass({
 	render() {
 		return <div>abcdef</div>;
 	}
-});
+})
+
+// export const IndexPage = React.createClass({
+// 	getInitialState() {
+// 		let id = this.props.root;
+// 		return {
+// 			id,
+// 			focus: id,
+// 			mode: 'view',
+// 			loading: true
+// 		};
+// 	},
+
+// 	getData(id) {
+// 		this.setState({ loading: true });
+// 		console.log('getting data');
+// 		Meteor.call(
+// 			'getRelatedNodes',
+// 			{ target: id, text: 'contains' },
+// 			(error, result) => {
+// 				console.log('got data');
+// 				console.log(result);
+// 				this.setState({ id, root: result.root, nodes: result.nodes, loading: false })
+// 			}
+// 		);
+// 	},
+
+// 	componentWillMount() {
+// 		this.getData(this.state.id);
+
+// 		$(document).on('keydown', e => {
+// 			if(this.state.mode == 'view') {
+// 				switch(e.which) {
+// 					case 81: // q
+// 					this.getData('');
+// 					break;
+// 					case 87: // w
+// 					// go back by one
+// 					break;
+// 					case 69: // e
+// 					// ?
+// 					break;
+// 					case 82: // r
+// 					this.getData(this.state.focus);
+// 					break;
+// 					case 65: // a
+// 					// ?
+// 					break;
+// 					case 83: // s
+// 					// ?
+// 					break;
+// 					case 68: // d
+// 					e.preventDefault();
+// 					if(e.ctrlKey) {
+// 						Meteor.call(
+// 							'deleteNode',
+// 							{ id: this.state.focus },
+// 							() => { this.getData(this.state.id) }
+// 						);
+// 					}
+// 					break;
+// 					case 70: // f
+// 					Meteor.call(
+// 						'insertNode',
+// 						{},
+// 						(error, id) => {
+// 							if(this.state.id && !error) {
+// 								Meteor.call(
+// 									'upsertProp',
+// 									{ _id: this.state.id, target: id, text: 'contains' },
+// 									() => { this.getData(this.state.id) }
+// 								);
+// 							} else {
+// 								this.getData(this.state.id);
+// 							}
+// 						}
+// 					);
+// 					break;
+// 				}
+// 			}
+// 			if(e.which == 9) {
+// 				e.preventDefault();
+// 				this.setState({ mode: (this.state.mode == 'edit') ? 'view' : 'edit' });
+// 			}
+// 		});
+// 	},
+
+// 	componentWillUnmount() { $(document).off('keydown') },
+
+// 	handleMouseDown(focus) { if(this.state.mode == 'view') this.setState({ focus }) },
+
+// 	TextNode(node) {
+// 		return (
+// 			<TextNode
+// 				id={node._id}
+// 				text={node.name}
+// 				mode={this.state.mode}
+// 				className={`TextNode ${(this.state.focus == node._id && this.state.mode == 'view') ? 'focus' : ''}`}
+// 			/>
+// 		);
+// 	},
+
+// 	render() {
+// 		if(this.state.loading) return <div>Loading...</div>;
+
+// 		return (
+// 			<div className="container">
+// 				<div className="row" style={{ paddingTop: '20px' }}>
+// 					<div className="col s12 root" onMouseDown={this.handleMouseDown.bind(this, this.state.id)}>
+// 						{this.TextNode(this.state.root)}
+// 					</div>
+// 				</div>
+// 				<div className="row">
+// 					<ul className="collection">
+// 						{this.state.nodes.map(node => {
+// 							return (
+// 								<li key={node._id} className="collection-item" onMouseDown={this.handleMouseDown.bind(this, node._id)}>
+// 									{this.TextNode(node)}
+// 								</li>
+// 							);
+// 						})}
+// 					</ul>
+// 				</div>
+// 				<div className="row">
+// 					<div>
+// 						{`Mode: ${this.state.mode == 'view' ? 'traversal' : 'manipulation'}`}
+// 					</div>
+// 				</div>
+// 			</div>
+// 		);
+// 	}
+// });
