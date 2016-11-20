@@ -1,14 +1,11 @@
-// /imports/ui/pages/Display.js
 import { Meteor } from 'meteor/meteor';
 import { Nodes } from '/imports/api/nodes/nodes.js';
-import { Links } from '/imports/api/links/links.js';
-import { insertNode, getRelatedNodes, deleteNode } from '/imports/api/methods.js';
+import { insertNode, getRelatedNodes, deleteNode } from '/imports/api/nodes/methods.js';
 import React from 'react';
 
-import { TextNode } from '/imports/ui/components/TextNode.js';
+import '/imports/ui/components/TextNode.js';
 
-
-export const Display = React.createClass({
+const Display = React.createClass({
 	getInitialState() {
 		let id = this.props.root;
 		return {
@@ -21,10 +18,13 @@ export const Display = React.createClass({
 
 	getData(id) {
 		this.setState({ loading: true });
+		console.log('getting data');
 		Meteor.call(
 			'getRelatedNodes',
-			{ root: id, text: 'contains' },
+			{ target: id, text: 'contains' },
 			(error, result) => {
+				console.log('got data');
+				console.log(result);
 				this.setState({ id, root: result.root, nodes: result.nodes, loading: false })
 			}
 		);
@@ -71,8 +71,8 @@ export const Display = React.createClass({
 						(error, id) => {
 							if(this.state.id && !error) {
 								Meteor.call(
-									'upsertLink',
-									{ subject: this.state.id, object: id, text: 'contains' },
+									'upsertProp',
+									{ _id: this.state.id, target: id, text: 'contains' },
 									() => { this.getData(this.state.id) }
 								);
 							} else {

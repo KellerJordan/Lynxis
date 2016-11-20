@@ -1,23 +1,17 @@
-// /imports/ui/components/TextNode.js
 import { Meteor } from 'meteor/meteor';
 import { Nodes } from '/imports/api/nodes/nodes.js';
-import { Links } from '/imports/api/links/links.js';
-import { upsertLink } from '/imports/api/methods.js';
+import { upsertLink } from '/imports/api/nodes/methods.js';
 import React from 'react';
 
-const Name_ID = Links.find({ text: 'name' });
-
-export const TextNode = React.createClass({
+const TextNode = React.createClass({
 	getInitialState() {
-		return {
-			text: this.props.text,
-		}
+		return { text: this.props.text }
 	},
 
 	handleChange(event) {
 		let text = event.target.value;
 		this.setState({ text });
-		upsertLink.call({ subject: this.props.id, object: Name_ID, text });
+		upsertProp.call({ _id: this.props.id, target: 'name', text });
 	},
 
 	render() {
