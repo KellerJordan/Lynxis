@@ -1,4 +1,3 @@
-// /imports/api/methods.js
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
@@ -10,8 +9,29 @@ export const insertNode = new ValidatedMethod({
 
 	run({}) {
 		return Nodes.insert({
-			date: Date.parse(new Date())
+			createdOn: Date.parse(new Date())
 		});
+	}
+});
+
+export const upsertLink = new ValidatedMethod({
+	name: 'upsertLink',
+	validate: new SimpleSchema({
+		source: { type: String },
+		target: { type : String },
+		value: { type: String }
+	}),
+
+	run({ source, target, value }) {
+		Nodes.update(
+			{ source },
+			{ $set: {
+				source,
+				target,
+				value,
+				createdOn: Date.parse(new Date())
+			} }
+		);
 	}
 });
 

@@ -30,12 +30,12 @@ export const MainLayout = React.createClass({
 							<li className="collection-item row"><div className="col s1">F:</div>Insert new node with relation 'contains' to focus.</li>
 						</ul>
 						<h5>Parsing</h5>
-						<p>
-							Indicate TeX by starting line with two dollar signs ('$$').
-						</p>
+						<ul className="collection">
+							<li className="collection-item row">Indicate TeX by starting line with two dollar signs ('$$').</li>
+						</ul>
 					</div>
 				</div>
-				{this.props.page}
+				{this.props.content}
 			</div>
 		);
 	},

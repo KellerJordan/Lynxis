@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Nodes } from '../../api/nodes/nodes.js';
 
 Meteor.startup(() => {
-	if(Nodes.find().count() == 0) {
+	if(!Nodes.findOne()) {
 
 		Nodes.insert({
 			date: new Date(),

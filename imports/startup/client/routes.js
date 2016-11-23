@@ -9,6 +9,6 @@ import { IndexPage } from '/imports/ui/pages/IndexPage.js';
 
 Router.route('/', {
 	action() {
-		render(<MainLayout page={<IndexPage root={5} />} />, document.getElementById('render-target'));
+		render(<MainLayout content={<IndexPage root={5} />} />, document.getElementById('render-target'));
 	}
 });
