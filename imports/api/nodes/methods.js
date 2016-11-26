@@ -20,7 +20,7 @@ export const upsertLink = new ValidatedMethod({
 		source: { type: String },
 		target: { type : String },
 		value: { type: String }
-	}),
+	}).validator(),
 
 	run({ source, target, value }) {
 		Nodes.update(
@@ -35,21 +35,21 @@ export const upsertLink = new ValidatedMethod({
 	}
 });
 
-export const upsertProp = new ValidatedMethod({
-	name: 'upsertLink',
-	validate: new SimpleSchema({
-		_id: { type: String },
-		target: { type: String },
-		text: { type: String }
-	}).validator(),
+// export const upsertProp = new ValidatedMethod({
+// 	name: 'upsertLink',
+// 	validate: new SimpleSchema({
+// 		_id: { type: String },
+// 		target: { type: String },
+// 		text: { type: String }
+// 	}).validator(),
 
-	run({ _id, target, text }) {
-		Nodes.update(
-			{ _id },
-			{ $set: { target: text } }
-		);
-	}
-});
+// 	run({ _id, target, text }) {
+// 		Nodes.update(
+// 			{ _id },
+// 			{ $set: { target: text } }
+// 		);
+// 	}
+// });
 
 export const getRelatedNodes = new ValidatedMethod({
 	name: 'getRelatedNodes',
